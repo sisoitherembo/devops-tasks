@@ -4,7 +4,7 @@ services:
   nginx-app:
     build: 
       context: nginx-config
-      dockerfile: nginx-config/nginx.dockerfile
+      dockerfile: nginx.dockerfile
     ports:
       - "8081:80"
     volumes:
@@ -15,7 +15,7 @@ services:
   apache-app:
     build:
       context: apache-config
-      dockerfile: apache-config/apache.dockerfile
+      dockerfile: apache.dockerfile
     ports:
       - "8082:80"
 

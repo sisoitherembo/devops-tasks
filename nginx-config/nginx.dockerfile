@@ -3,7 +3,7 @@ FROM nginx:1.22.0-alpine as nginx-app
 ENV USER=nginx-user
 ENV HOME=/home/${USER}
 
-EXPOSE 80/tcp
+EXPOSE 80:80/tcp
 EXPOSE 8080/tcp
 EXPOSE 8081/tcp
 EXPOSE 8082/tcp

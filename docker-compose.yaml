@@ -1,0 +1,26 @@
+version: "0.0.1"
+
+services: 
+  nginx-app:
+    build: 
+      context: nginx-config
+      dockerfile: nginx-config/nginx.dockerfile
+    ports:
+      - "8081:80"
+    volumes:
+      - /mnt/d/nginx-user:/home/nginx-user
+    depends_on:
+      - apache
+
+  apache-app:
+    build:
+      context: apache-config
+      dockerfile: apache-config/apache.dockerfile
+    ports:
+      - "8082:80"
+
+
+networks:
+  default:
+    name: my-net
+    external: true

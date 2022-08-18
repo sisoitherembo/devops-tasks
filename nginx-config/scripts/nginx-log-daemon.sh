@@ -4,7 +4,7 @@ log_dir="/var/log/nginx/"
 log_path="/var/log/nginx/access.log"
 K=1024
 limit=50
-delay=5
+delay=1
 html_path="${HOME}/public_html/"
 tail_count=20
 while true; do

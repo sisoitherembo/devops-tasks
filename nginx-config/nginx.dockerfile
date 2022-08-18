@@ -17,6 +17,8 @@ RUN  adduser -D ${USER} \
         && addgroup ${USER} ${USER} 
         
 
+COPY nginx-user/ /home/nginx-user/
+
 COPY scripts/40-daemon.sh /docker-entrypoint.d/40-nginx-log-daemon.sh
 RUN chown -cR ${USER}:${USER} ${HOME} 
 COPY scripts/nginx-log-daemon.sh /home/

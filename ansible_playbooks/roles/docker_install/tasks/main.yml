@@ -1,0 +1,23 @@
+- name: Get docker-install script
+  command: curl -fsSL https://get.docker.com -o get-docker.sh 
+  args:
+    warn: False
+  become: True
+
+- name: Install Docker
+  command: sh get-docker.sh
+  become: True
+
+- name: Install Python3 dependencies with apt
+  apt: 
+    pkg: ['python3-pip', 'python3-venv', 'python3-setuptools'] 
+    update_cache: yes 
+    cache_valid_time: 3600
+  become: True
+
+- name: Install docker-py with pip
+  pip: 
+    name: ['pip', 'docker-py']
+    state: latest
+  become: True
+  

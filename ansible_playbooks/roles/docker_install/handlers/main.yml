@@ -1,0 +1,6 @@
+- name: Check Docker is running
+  service: 
+    name: docker
+    state: started
+    enabled: True
+    become: True

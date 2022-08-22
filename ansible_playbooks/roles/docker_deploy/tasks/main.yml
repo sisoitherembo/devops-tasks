@@ -1,0 +1,24 @@
+- name: Checking Docker is running
+  service: 
+    name: docker
+    state: started
+
+- name: Authenticate with repository
+  docker_login: 
+    username: "{{ docker_username }}"
+    email:    "{{ docker_email }}"
+    password: "{{ docker_password }}"
+
+- name: Create Docker network
+  docker_network: name="{{ docker_network }}"
+
+- name: Start containers
+  docker_container: 
+    name: "{{ item.name }}"
+    image: "{{ item.image }}"
+    pull: "{{ docker_enable_pulling_images }}"
+    networks: 
+      - name: "{{ docker_network }}"
+    ports: 
+      - "{{ item.ports }}"
+  with_items: "{{ docker_images }}"

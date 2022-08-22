@@ -1,0 +1,25 @@
+- name: "Launch Docker-images on EC2-servers"
+  hosts: ec2_servers
+  become: True
+  gather_facts: False 
+  
+  vars_files:
+    - variables/secrets.yml
+
+  roles: 
+    - role: docker_install
+    
+    - role: docker_deploy
+      docker_username: sisoitherembo
+      docker_email: dmitri20023zarubo@gmail.com
+      docker_password: "{{ docker_user_password }}"
+      docker_enable_pulling_images: yes
+      docker_network: my-net
+      docker_images:
+        - name: apache-app
+          image: "{{ docker_username }}/apache-app:latest"
+          ports: "8080:80"
+        - name: nginx-app
+          image: "{{ docker_username }}/nginx-app:latest"
+          ports: "80:80"
+  

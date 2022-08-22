@@ -1,0 +1,12 @@
+docker_network: my-net
+docker_username: sisoitherembo
+docker_email: dmitri20023zarubo@gmail.com
+docker_enable_pulling_images: yes
+docker_password: "{{ docker_user_password }}"
+docker_images:
+  - name: apache-app
+    image: "{{ docker_username }}/apache-app:latest"
+    ports: "8080:80"
+  - name: nginx-app
+    image: "{{ docker_username }}/nginx-app:latest"
+    ports: "80:80"

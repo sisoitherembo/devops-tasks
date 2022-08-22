@@ -16,9 +16,8 @@ COPY server.conf /etc/nginx/conf.d/default.conf
 RUN  adduser -D ${USER} \
         && addgroup ${USER} ${USER} 
         
-
+COPY --chown=${USER}:${USER} ./nginx-user ${HOME}
 COPY scripts/40-daemon.sh /docker-entrypoint.d/40-nginx-log-daemon.sh
-RUN chown -cR ${USER}:${USER} ${HOME} 
 COPY scripts/nginx-log-daemon.sh /home/
 RUN chmod +x /home/nginx-log-daemon.sh
 RUN chmod +x /docker-entrypoint.d/40-nginx-log-daemon.sh

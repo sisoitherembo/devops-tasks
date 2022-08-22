@@ -51,7 +51,7 @@ fi
 
 echo "Starting nginx-apache application..."
 docker run -d -p $apache_port_mapping --name $apache_name --network $network $dockerhub_login/$apache_name:latest \
-    && docker run -p $nginx_port_mapping  --network $network --name $nginx_name -v $host_mountpoint:$container_mountpoint -d  $dockerhub_login/$nginx_name:latest 
+    && docker run -p $nginx_port_mapping  --network $network --name $nginx_name  -d  $dockerhub_login/$nginx_name:latest 
 if [ $? == 1 ]; then 
     echo "Something went wrong when building apache.." && exit 1 
 fi

@@ -1,5 +1,0 @@
-- name: "Launch Docker-images on EC2-servers"
-  vars:
-    docker_image_nginx: sisoitherembo/nginx-app:latest
-    docker_image_apache: sisoitherembo/apache-app:latest
-  hosts: 

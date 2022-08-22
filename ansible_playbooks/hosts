@@ -1,0 +1,7 @@
+[ec2_servers]
+server1 ansible_host=3.14.148.132
+server2 ansible_host=3.128.180.122
+
+[ec2_servers:vars]
+provider=aws 
+service=ec2

@@ -6,5 +6,5 @@ Tutorial:
 Be sure that host_mountpoint used correctly. Host_mountpoint is "nginx-user" folder on your host
 
 Tutorial to Ansible-playbook:
-- cd to ansible-playbooks folder and then run "$ source ./activate" to import env virables
+- cd to ansible-playbooks folder and then run "$ source ./activate" to import env variables
 - run "$ ansible-playbook nginx-deploy.yml" to deploy application in docker containers on defined hosts

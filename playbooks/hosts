@@ -1,0 +1,2 @@
+server1 ansible_host= ansible_port=22
+server2 ansible_host= ansible_port=2

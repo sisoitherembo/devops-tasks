@@ -1,0 +1,8 @@
+aws_region: us-east-2
+aws_instance_type: t2.micro
+aws_key_name: keypair
+aws_image_ami: ami-02f3416038bdb17fb
+aws_instance_count: 2
+aws_security_group: "SSH-HTTP-HTTPS"
+aws_access_key_id: "{{ aws_ansible_access_key_id }}"
+aws_secret_access_key_id: "{{ aws_ansible_secret_access_key_id }}"

@@ -1,3 +1,21 @@
+- name: "Start new ec2 instances"
+  hosts: localhost
+  gather_facts: False
+
+  vars_files:
+    - variables/secrets.yml
+
+  roles:
+    - role: ec2_instance_start
+      aws_access_key_id: "{{ aws_ansible_access_key_id }}"
+      aws_secret_access_key_id: "{{ aws_ansible_secret_access_key_id }}"
+      aws_region: us-east-2
+      aws_instance_type: t2.micro
+      aws_key_name: keypair
+      aws_instance_count: 2
+      aws_security_group: "SSH-HTTP-HTTPS"
+
+
 - name: "Launch Docker-images on EC2-servers"
   hosts: ec2_servers
   become: True
@@ -22,4 +40,4 @@
         - name: nginx-app
           image: "{{ docker_username }}/nginx-app:latest"
           ports: "80:80"
-  
+    

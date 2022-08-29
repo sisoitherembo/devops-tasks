@@ -15,7 +15,7 @@ pipeline{
         stage ("Build and push Apache-app"){
             steps{
                 script{
-                    dockerImage = docker.build(registry + "apache-app:latest", "-f apache-dockerfile ./apache-config")
+                    dockerImage = docker.build(registry + "apache-app:latest", "-f ./apache-config/apache-dockerfile .")
                     docker.withRegistry( '', dockerhub ) {
                         dockerImage.push()
                     }
@@ -27,7 +27,7 @@ pipeline{
         stage ("Build and push Nginx-app"){
             steps{
                 script{
-                    dockerImage = docker.build(registry + "nginx-app:latest", "-f nginx-dockerfile ./nginx-config")
+                    dockerImage = docker.build(registry + "nginx-app:latest", "-f ./nginx-config/nginx-dockerfile .")
                     docker.withRegistry( '', dockerhub ) {
                         dockerImage.push()
                     }

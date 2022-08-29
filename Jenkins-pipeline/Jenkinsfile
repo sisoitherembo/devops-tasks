@@ -34,7 +34,7 @@ pipeline{
                 script{
                     withCredentials([sshUserPrivateKey(credentialsId: 'ssh-host', keyFileVariable: 'KEYPAIR', usernameVariable: 'USER')]) {
                         sh 'scp -i $KEYPAIR -o StrictHostKeyChecking=no Jenkins-pipeline/docker-compose-pipeline.yml $USER@18.222.46.64:~/docker-compose.yml'
-                        sh 'ssh -i $KEYPAIR -o StrictHostKeyChecking=no -t  $USER@ec2-sisoi2.ddns.net  "docker compose up -d"'
+                        sh 'ssh -i $KEYPAIR -o StrictHostKeyChecking=no  $USER@ec2-sisoi2.ddns.net  "sudo docker compose up -d"'
                     }
                 }
             }

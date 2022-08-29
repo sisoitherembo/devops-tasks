@@ -1,3 +1,7 @@
 pipeline{
-    
+    stages{
+        stage ("1- VCS"){
+            
+        }
+    }
 }

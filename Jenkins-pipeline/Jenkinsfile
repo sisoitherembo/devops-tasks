@@ -1,10 +1,35 @@
-pipeline{
-    agent any
-    stages{
-        stage ("1 - VCS"){
-            steps{
-                echo "Hello"
-            }
+def remote = [:]
+remote.name = "node"
+remote.host = "ec2-sisoi2.ddns.net"
+remote.allowAnyHosts = true
+
+node{
+    stage ("Build Apache-app"){
+        sh "docker build -f apache.dockerfile -t sisoitherembo/apache-app:latest ./apache-config"
+    }
+
+    stage ("Build Nginx-app"){
+        sh "docker build -f nginx.dockerfile -t sisoitherembo/nginx-app:latest ./nginx-config"
+    }
+
+    stage ("Push Apache-app"){
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+                sh 'docker push sisoitherembo/apache-app:latest'
+        }
+    }
+    stage ("Push Nginx-app"){
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+            sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+            sh 'docker push sisoitherembo/nginx:latest'
+        }
+    }
+    stage("Start our application"){
+        withCredentials([usernamePassword(credentialsId: 'ssh-host', passwordVariable: 'password', usernameVariable: 'userName')]) {
+            remote.user = userName
+            remote.password = password
+            sshPut remote: remote, from: 'docker-compose-pipeline.yml', into: '.'
+            sshCommand remote: remote, command: 'sudo docker compose up'
         }
     }
 }

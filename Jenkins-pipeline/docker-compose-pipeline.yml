@@ -1,0 +1,20 @@
+version: "0.0.1"
+
+services: 
+  nginx-app:
+    image: sisoitherembo/nginx-app:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - apache-app
+
+  apache-app:
+    image: sisoitherembo/apache-app:latest
+    ports:
+      - "8080:80"
+
+
+networks:
+  default:
+    name: my-net
+    external: true

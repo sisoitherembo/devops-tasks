@@ -37,16 +37,10 @@ pipeline{
         stage("Start our application"){
             steps{  
                 script{
-                    def remote = [:]
-                    remote.name = "node"
-                    remote.host = "ec2-sisoi2.ddns.net"
-                    remote.allowAnyHosts = true
-                    withCredentials([usernamePassword(credentialsId: 'ssh-host', passwordVariable: 'password', usernameVariable: 'userName')]) {
-                        remote.user = userName
-                        remote.password = password
-                        sshPut remote: remote, from: 'docker-compose-pipeline.yml', into: '.'
-                        sshCommand remote: remote, command: 'sudo docker compose up'
-                }
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ssh-host', keyFileVariable: 'keypair'), usernameVariable: 'user']) {
+                        sh "scp -i ${keypair} Jenkins-pipeline/docker-compose-pipeline.yml ${user}@ec2-sisoi2.ddns.net:~/docker-compose.yml"
+                        sh "ssh -i ${keypair} ${user}@ec2-sisoi2.ddns.net 'sudo docker compose up -d'"
+                    }
             }
             }
         }

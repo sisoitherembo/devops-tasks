@@ -5,16 +5,20 @@ services:
     image: sisoitherembo/nginx-app:latest
     ports:
       - "80:80"
+    networks:
+      - my-net
     depends_on:
       - apache-app
+      
 
   apache-app:
     image: sisoitherembo/apache-app:latest
     ports:
       - "8080:80"
+    networks:
+      - my-net
 
 
 networks:
-  default:
-    name: my-net
-    external: true
+  my-net:
+    driver: bridge

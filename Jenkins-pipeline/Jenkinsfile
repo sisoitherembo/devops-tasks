@@ -4,6 +4,9 @@ remote.host = "ec2-sisoi2.ddns.net"
 remote.allowAnyHosts = true
 
 node{
+    stage("Get VCS code"){
+        git url: "https://github.com/sisoitherembo/docker-devops-task.git", branch: 'master'
+    }
     stage ("Build Apache-app"){
         sh "docker build -f apache.dockerfile -t sisoitherembo/apache-app:latest ./apache-config"
     }

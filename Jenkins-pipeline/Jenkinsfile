@@ -37,9 +37,9 @@ pipeline{
         stage("Start our application"){
             steps{  
                 script{
-                    withCredentials([sshUserPrivateKey(credentialsId: 'ssh-host', keyFileVariable: 'keypair', usernameVariable: 'user')]) {
-                        sh 'scp -i $keypair Jenkins-pipeline/docker-compose-pipeline.yml $user@ec2-sisoi2.ddns.net:~/docker-compose.yml'
-                        sh 'ssh -i $keypair $user@ec2-sisoi2.ddns.net "sudo docker compose up -d"'
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ssh-host', keyFileVariable: 'KEYPAIR', usernameVariable: 'USER')]) {
+                        sh 'scp -i $KEYPAIR Jenkins-pipeline/docker-compose-pipeline.yml $USER@ec2-sisoi2.ddns.net:~/docker-compose.yml'
+                        sh 'ssh -i $KEYPAIR $USER@ec2-sisoi2.ddns.net "sudo docker compose up -d"'
                     }
                 }
             }

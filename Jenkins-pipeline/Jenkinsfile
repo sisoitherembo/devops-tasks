@@ -38,8 +38,10 @@ pipeline{
             steps{  
                 script{
                     withCredentials([sshUserPrivateKey(credentialsId: 'ssh-host', keyFileVariable: 'KEYPAIR', usernameVariable: 'USER')]) {
-                        sh 'scp -i $KEYPAIR  Jenkins-pipeline/docker-compose-pipeline.yml $USER@18.222.46.64:~/docker-compose.yml'
-                        sh 'ssh -i $KEYPAIR  -t  $USER@ec2-sisoi2.ddns.net  "docker compose up -d"'
+                        sh 'echo $KEYPAIR > creds.pem'
+                        sh 'chmod 600 creds.pem'
+                        sh 'scp -i creds.pem  Jenkins-pipeline/docker-compose-pipeline.yml $USER@18.222.46.64:~/docker-compose.yml'
+                        sh 'ssh -i creds.pem  -t  $USER@ec2-sisoi2.ddns.net  "docker compose up -d"'
                     }
                 }
             }

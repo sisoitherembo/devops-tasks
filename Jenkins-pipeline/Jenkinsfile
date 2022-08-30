@@ -7,11 +7,6 @@ pipeline{
         dockerhub = 'dockerhub-creds'
     }
     stages{
-        stage('Cloning Git') {
-            steps {
-                git 'https://github.com/sisoitherembo/docker-devops-task.git'
-            }
-        }
         stage ("Build and push Apache-app"){
             steps{
                 script{
@@ -37,17 +32,11 @@ pipeline{
         stage("Start our application"){
             steps{  
                 script{
-                    def remote = [:]
-                    remote.name = "node"
-                    remote.host = "ec2-sisoi2.ddns.net"
-                    remote.allowAnyHosts = true
-                    withCredentials([usernamePassword(credentialsId: 'ssh-host', passwordVariable: 'password', usernameVariable: 'userName')]) {
-                        remote.user = userName
-                        remote.password = password
-                        sshPut remote: remote, from: 'docker-compose-pipeline.yml', into: '.'
-                        sshCommand remote: remote, command: 'sudo docker compose up'
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ssh-host', keyFileVariable: 'KEYPAIR', usernameVariable: 'USER')]) {
+                        sh 'scp -i $KEYPAIR -o StrictHostKeyChecking=no Jenkins-pipeline/docker-compose-pipeline.yml $USER@18.222.46.64:~/docker-compose.yml'
+                        sh 'ssh -i $KEYPAIR -o StrictHostKeyChecking=no  $USER@ec2-sisoi2.ddns.net  "sudo docker compose up -d"'
+                    }
                 }
-            }
             }
         }
     }

@@ -34,6 +34,8 @@ phases:
       - docker push $APP2
 
 artifacts:
+  files:
+    - "**/*"
   secondary-artifacts:
     artifact1:
       files:

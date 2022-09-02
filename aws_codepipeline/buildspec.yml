@@ -7,13 +7,13 @@ env:
     docker_login: DOCKERHUB_LOGIN
     docker_password: DOCKERHUB_PASSWORD
   variables:
-    APP1: $docker_login/apache-app:latest
-    APP2: $docker_login/nginx-app:latest
-    DFILE1: apache.dockerfile
-    DFILE2: nginx.dockerfile
-    FOLDER1: apache-config
-    FOLDER2: nginx-config
-    STATIC_FILES: $FOLDER2/nginx-user/*
+    APP1: "$docker_login/apache-app:latest"
+    APP2: "$docker_login/nginx-app:latest"
+    DFILE1: "apache.dockerfile"
+    DFILE2: "nginx.dockerfile"
+    FOLDER1: "apache-config"
+    FOLDER2: "nginx-config"
+    STATIC_FILES: "$FOLDER2/nginx-user/*"
 
 phases:
   pre_build:

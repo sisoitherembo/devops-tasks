@@ -21,7 +21,6 @@ phases:
   pre_build:
     commands:
       - echo "Starting logging to aws cli"
-      - $(aws ecr get-login-password --no-include-email --region=us-east-2)
       - echo "Docker-ce started!!!"
   build:
     commands:
@@ -32,8 +31,10 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - docker push $REPO:latest
-      - docker push $REPO:latest
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $REPO1
+      - docker push $REPO1:latest
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $REPO2
+      - docker push $REPO2:latest
 
 artifacts:
   files: 

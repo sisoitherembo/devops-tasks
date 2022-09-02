@@ -36,9 +36,9 @@ phases:
 artifacts:
   files: 
     - $STATIC_FILES
-  name: "s3-output-artifacts"
+  name: "s3_output_artifacts"
   secondary-artifacts:
     artifact1:
       files:
         - $STATIC_FILES
-      name: "s3-output-artifacts"
+      name: "s3_output_artifacts"

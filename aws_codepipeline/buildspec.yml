@@ -21,7 +21,10 @@ phases:
   pre_build:
     commands:
       - echo "Starting docker-ce..."
-      - service docker start
+      - cd /usr/bin
+      - docker version
+      - dockerd-rootless-setuptool.sh install
+      - systemctl --user start docker 
       - docker login -p $docker_password -u $docker_login
       - echo "Docker-ce started!!!"
   build:

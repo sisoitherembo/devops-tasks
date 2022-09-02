@@ -15,7 +15,7 @@ env:
     DFILE2: "nginx.dockerfile"
     FOLDER1: "apache-config"
     FOLDER2: "nginx-config"
-    STATIC_FILES: "nginx-config/nginx-user/**/*"
+    STATIC_FILES: "nginx-config/nginx-user/public_html/**"
 
 phases:
   pre_build:

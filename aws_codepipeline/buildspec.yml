@@ -34,7 +34,7 @@ phases:
       - docker push $APP2
 
 artifacts:
-  files: ""
+  files: $STATIC_FILES
   secondary-artifacts:
     artifact1:
       files:

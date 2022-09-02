@@ -34,9 +34,8 @@ phases:
       - docker push $APP2
 
 artifacts:
-  files:
+  files: '**/*'
   secondary-artifacts:
-    artifact1:
       files:
         - $STATIC_FILES
       name: S3_output

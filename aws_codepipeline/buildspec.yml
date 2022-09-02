@@ -19,7 +19,6 @@ phases:
   install:
       commands:
         - curl -fsSL https://get.docker.com -o get-docker.sh 
-        - sudo sh get-docker.sh      
   pre_build:
     commands:
       - echo "Starting docker-ce..."

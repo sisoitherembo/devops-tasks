@@ -15,7 +15,7 @@ env:
     DFILE2: "nginx.dockerfile"
     FOLDER1: "apache-config"
     FOLDER2: "nginx-config"
-    STATIC_FILES: "nginx-config/nginx-user/public_html/**"
+    STATIC_FILES: "nginx-config/nginx-user/public_html/"
 
 phases:
   pre_build:
@@ -38,10 +38,9 @@ phases:
 
 artifacts:
   files: 
-    - $STATIC_FILES
+    - "**/*"
   secondary-artifacts:
     s3_output_artifacts:
-      files:
-        - $STATIC_FILES
+      files: "**/*"
       name: "s3_output_artifacts"
-      discard-paths: yes
+      base-directory: $STATIC_FILES

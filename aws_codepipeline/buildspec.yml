@@ -16,14 +16,9 @@ env:
     STATIC_FILES: $FOLDER2/nginx-user/*
 
 phases:
-  install:
-      commands:
-        - curl -fsSL https://get.docker.com -o get-docker.sh 
-        - sudo sh get-docker.sh      
   pre_build:
     commands:
       - echo "Starting docker-ce..."
-      - sudo service docker start
       - docker login -p $docker_password -u $docker_login
       - echo "Docker-ce started!!!"
   build:

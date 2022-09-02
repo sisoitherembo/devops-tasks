@@ -7,7 +7,8 @@ env:
     docker_login: DOCKERHUB_LOGIN
     docker_password: DOCKERHUB_PASSWORD
   variables:
-    REPO: 245915323250.dkr.ecr.us-east-2.amazonaws.com/codepipeline-nginx
+    REPO1: 245915323250.dkr.ecr.us-east-2.amazonaws.com/codepipeline-apache
+    REPO2: 245915323250.dkr.ecr.us-east-2.amazonaws.com/codepipeline-nginx
     APP1: 'apache-app'
     APP2: 'nginx-app'
     DFILE1: "apache.dockerfile"
@@ -20,19 +21,19 @@ phases:
   pre_build:
     commands:
       - echo "Starting logging to aws cli"
-      - $(aws ecr get-login --no-include-email --region us-east-2)
+      - $(aws ecr get-login --no-include-email --region=us-east-2)
       - echo "Docker-ce started!!!"
   build:
     commands:
       - echo "Starting build actions"
       - echo Build started on `date`
-      - docker build -f $FOLDER1/$DFILE1 -t $REPO:$APP1 $FOLDER1
-      - docker build -f $FOLDER2/$DFILE2 -t $REPO:$APP2 $FOLDER2
+      - docker build -f $FOLDER1/$DFILE1 -t $REPO1:latest $FOLDER1
+      - docker build -f $FOLDER2/$DFILE2 -t $REPO2:latest $FOLDER2
   post_build:
     commands:
       - echo Build completed on `date`
-      - docker push $REPO:$APP1
-      - docker push $REPO:$APP2
+      - docker push $REPO:latest
+      - docker push $REPO:latest
 
 artifacts:
   files: 

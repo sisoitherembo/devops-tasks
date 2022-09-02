@@ -21,18 +21,18 @@ phases:
   pre_build:
     commands:
       - echo "Starting docker-ce..."
-      - sudo service docker start
-      - sudo docker login -p $docker_password -u $docker_login
+      - service docker start
+      - docker login -p $docker_password -u $docker_login
       - echo "Docker-ce started!!!"
   build:
     commands:
       - echo "Starting build actions"
       - echo Build started on `date`
-      - sudo docker build -f $FOLDER1/$DFILE1 -t $APP1 ./$FOLDER1
-      - sudo docker build -f $FOLDER2/$DFILE2 -t $APP2 ./$FOLDER2
+      - docker build -f $FOLDER1/$DFILE1 -t $APP1 ./$FOLDER1
+      - docker build -f $FOLDER2/$DFILE2 -t $APP2 ./$FOLDER2
     finally:
-      - sudo docker push $APP1
-      - sudo docker push $APP2
+      - docker push $APP1
+      - docker push $APP2
   post_build:
     commands:
       - echo Build completed on `date`

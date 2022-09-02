@@ -1,5 +1,7 @@
 version: 0.1
 
+run-as: root
+
 env:
   parameter-store: 
     docker_login: DOCKERHUB_LOGIN

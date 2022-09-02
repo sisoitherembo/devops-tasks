@@ -1,4 +1,4 @@
-version: 0.1
+version: 0.2
 
 run-as: root
 
@@ -26,13 +26,12 @@ phases:
       - echo "Starting build actions"
       - echo Build started on `date`
       - docker build -f $FOLDER1/$DFILE1 -t $APP1 $FOLDER1
-      - docker build -f $FOLDER2/$DFILE2 -t $APP2 ses$FOLDER2
-    finally:
-      - docker push $APP1
-      - docker push $APP2
+      - docker build -f $FOLDER2/$DFILE2 -t $APP2 $FOLDER2
   post_build:
     commands:
       - echo Build completed on `date`
+      - docker push $APP1
+      - docker push $APP2
 
 artifacts:
   files:

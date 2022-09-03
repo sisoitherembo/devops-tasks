@@ -1,0 +1,16 @@
+version: 0.2
+
+run-as: root
+
+env:
+  variables:
+    STATIC_FILES: "nginx-config/nginx-user/public_html/"
+
+phases:
+  build:
+    commands:
+      - echo "Pushing html files to s3 bucket"
+
+artifacts:
+  files: 
+    - "**/*"

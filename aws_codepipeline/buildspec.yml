@@ -36,7 +36,7 @@ phases:
       - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $REPO2
       - docker push $REPO2:latest
       - echo "Writing imagedefinition files"
-      - printf '[{"name" : "apache-app", "imageUri" : "%s"}, {"name": "nginx-app", "imageUri" : "%s"}]' $REPO1:latest $REPO2:latest > imagedefinitions.json
+      - printf '[{"name":"apache-app","imageUri":"%s"},{"name":"nginx-app","imageUri":"%s"}]' $REPO1:latest $REPO2:latest > imagedefinitions.json
       - cat imagedefinitions.json
 
 artifacts: 

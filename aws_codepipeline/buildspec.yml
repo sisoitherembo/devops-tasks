@@ -7,8 +7,8 @@ env:
     docker_login: DOCKERHUB_LOGIN
     docker_password: DOCKERHUB_PASSWORD
   variables:
-    REPO1: 245915323250.dkr.ecr.us-east-2.amazonaws.com/codepipeline-apache
-    REPO2: 245915323250.dkr.ecr.us-east-2.amazonaws.com/codepipeline-nginx
+    REPO1: 245915323250.dkr.ecr.us-east-2.amazonaws.com/apache-app
+    REPO2: 245915323250.dkr.ecr.us-east-2.amazonaws.com/nginx-app
     APP1: 'apache-app'
     APP2: 'nginx-app'
     DFILE1: "apache.dockerfile"

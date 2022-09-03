@@ -14,3 +14,5 @@ phases:
 artifacts:
   files: 
     - "**/*"
+  name: "s3_output_artifacts"
+  base-directory: $STATIC_FILES

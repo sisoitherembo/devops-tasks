@@ -42,6 +42,6 @@ phases:
 artifacts: 
   files: 
     - imagedefinitions.json
-    - aws_codepipeline/appspec.yml
+    - aws_codepipeline/appspec.yaml
     - aws_codepipeline/taskdef.json
   discard-paths: yes

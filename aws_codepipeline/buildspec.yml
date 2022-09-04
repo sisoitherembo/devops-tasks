@@ -43,4 +43,5 @@ artifacts:
   files: 
     - imagedefinitions.json
     - aws_codepipeline/appspec.yml
+    - aws_codepipeline/taskdef.json
   discard-paths: yes

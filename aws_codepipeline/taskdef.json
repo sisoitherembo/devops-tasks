@@ -11,7 +11,16 @@
                     "protocol": "tcp",
                     "containerPort": 80
                 }
-            ]
+            ],
+            "dependsOn": [
+                {
+                    "containerName": "apache",
+                    "condition": "START"
+                }
+            ],
+            "links" :  [
+                "apache:apache-app"
+            ] 
         },
         {
             "name": "apache",

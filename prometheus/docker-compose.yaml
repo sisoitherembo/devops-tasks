@@ -34,7 +34,7 @@ services:
     ports:
       - 9100:9100
     networks:
-      - primetheus-net
+      - prometheus-net
     restart: always
     deploy:
       mode: global

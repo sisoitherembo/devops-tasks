@@ -57,8 +57,8 @@ services:
   prometheus-bot:
     image: sisoitherembo/telegram-bot:latest
     volumes: 
-      - ./telegrambot/:/etc/telegrambot
-      - ./telegrambot/config.yaml:/
+      - ./tg-alertbot/telegrambot/:/etc/telegrambot
+      - ./tg-alertbot/telegrambot/config.yaml:/config.yaml
     ports: 
       - "9087:9087"
     networks:

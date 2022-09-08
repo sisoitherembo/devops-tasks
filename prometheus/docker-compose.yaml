@@ -14,7 +14,8 @@ services:
       - ./prometheus/:/etc/prometheus
     ports:
       - "9090:9090"
-    networks: prometheus-net
+    networks: 
+      - prometheus-net
     restart: always
     deploy: 
       mode: global

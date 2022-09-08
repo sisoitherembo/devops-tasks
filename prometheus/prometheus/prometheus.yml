@@ -1,0 +1,30 @@
+global:
+  scrape_interval:     15s 
+  external_labels:
+    monitor: 'my-project'
+
+rule_files:
+  - alert.rules.yml
+
+alerting:
+  alertmanager:
+    - scheme: http
+      static_configs: 
+        - targets: ['alert-manager:9093']
+
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node-exporter'
+    scrape_interval: 15s
+    dns_sd_configs:
+    - names:
+      - 'tasks.node-exporter'
+      type: 'A'
+      port: 9100

@@ -1,0 +1,7 @@
+telegram_token: "5620302908:AAFV8tXaiW8tTtOfxsctix1WIH_5DKRuGb4"
+template_path:  "/etc/telegrambot/template.tmpl"
+time_zone:      "Europe/Moscow"
+time_outdata:   "02/01/2006 15:04:05"
+split_token:    ":" 
+split_msg_byte: 10000
+send_only:      true

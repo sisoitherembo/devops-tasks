@@ -7,7 +7,7 @@ rule_files:
   - alert.rules.yml
 
 alerting:
-  alertmanager:
+  alertmanagers:
     - scheme: http
       static_configs: 
         - targets: ['alert-manager:9093']

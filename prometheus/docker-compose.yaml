@@ -59,7 +59,8 @@ services:
     volumes: 
       - ./telegrambot/:/etc/telegrambot/
       - ./telegrambot/config.yaml:/config.yaml  
-    ports: "9087:9087"
+    ports: 
+      - "9087:9087"
     networks:
       - prometheus-net
     restart: always

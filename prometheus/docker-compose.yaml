@@ -9,6 +9,7 @@ networks:
 services: 
   prometheus:
     image: prom/prometheus:v2.38.0
+    container_name: prometheus
     volumes: 
       - prometheus_data:/prometheus
       - ./prometheus/:/etc/prometheus
@@ -22,6 +23,7 @@ services:
 
   node-exporter:
     image: quay.io/prometheus/node-exporter:v1.3.1
+    container_name: node-exporter
     volumes:
       - /:/rootfs:ro
       - /:/host:ro,rslave
@@ -41,6 +43,7 @@ services:
 
   alert-manager:
     image: prom/alertmanager:v0.24.0
+    container_name: alert-manager
     ports:
       - 9093:9093
     volumes:
@@ -56,6 +59,7 @@ services:
       
   prometheus-bot:
     image: sisoitherembo/telegram-bot:latest
+    container_name: prometheus-bot
     volumes: 
       - ./tg-alertbot/telegrambot/:/etc/telegrambot
       - ./tg-alertbot/telegrambot/config.yaml:/config.yaml

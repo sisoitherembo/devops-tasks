@@ -58,16 +58,16 @@ services:
     deploy: 
       mode: global
       
-  prometheus-bot:
-    image: sisoitherembo/telegram-bot:latest
-    container_name: prometheus-bot
-    volumes: 
-      - ./tg-alertbot/telegrambot/:/etc/telegrambot
-      - ./tg-alertbot/telegrambot/config.yaml:/config.yaml
-    ports: 
-      - "9087:9087"
-    networks:
-      - prometheus-net
-    restart: always
-    deploy: 
-      mode: global
+#  prometheus-bot:
+#    image: sisoitherembo/telegram-bot:latest
+#    container_name: prometheus-bot
+#    volumes: 
+#      - ./tg-alertbot/telegrambot/:/etc/telegrambot
+#      - ./tg-alertbot/telegrambot/config.yaml:/config.yaml
+#    ports: 
+#      - "9087:9087"
+#    networks:
+#      - prometheus-net
+#    restart: always
+#    deploy: 
+#      mode: global

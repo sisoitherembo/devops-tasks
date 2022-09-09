@@ -10,7 +10,6 @@ receivers:
   - name: 'slack'
     slack_configs:
       - api_url: "https://hooks.slack.com/services/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"
-        channel: '#general'
         send_resolved: true
         text: "\nsummary: {{ .CommonAnnotations.summary }}\ndescription: {{ .CommonAnnotations.description }} "
 inhibit_rules:

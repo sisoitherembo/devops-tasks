@@ -1,6 +1,5 @@
 global:
   resolve_timeout: 5m
-  slack_api_url: 'https://hooks.slack.com/services/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'
 route:
   group_by: ['example']
   group_wait: 30s
@@ -10,7 +9,10 @@ route:
 receivers:
   - name: 'slack'
     slack_configs:
-    - channel: '#alerting-prometheus'
+      api_url: https://hooks.slack.com/services/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
+      channel: '#alerting-prometheus'
+      send_resolved: true
+      text: "\nsummary: {{ .CommonAnnotations.summary }}\ndescription: {{ .CommonAnnotations.description }} "
 inhibit_rules:
   - source_match:
       severity: 'critical'

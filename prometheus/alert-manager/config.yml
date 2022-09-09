@@ -9,7 +9,7 @@ route:
 receivers:
   - name: 'slack'
     slack_configs:
-      - api_url: "https://hooks.slack.com/services/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"
+      - api_url: "https://hooks.slack.com/services/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"
         channel: 	'#alerting-prometheus'
         send_resolved: true
         text: "\nsummary: {{ .CommonAnnotations.summary }}\ndescription: {{ .CommonAnnotations.description }} "

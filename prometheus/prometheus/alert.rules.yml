@@ -12,7 +12,7 @@ groups:
       summary: "Instance {{ $labels.instance }} down"
       description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes."
 
-  - alert: prometheus_high-load
+  - alert: prometheus_CPU-load
     expr: node_cpu_seconds_total{job="prometheus_node-exporter", mode="iowait"} > 10
     for: 2m
     labels:
@@ -21,8 +21,8 @@ groups:
       summary: "Instance {{ $labels.instance }} under high load"
       description: "{{ $labels.instance }} of job {{ $labels.job }} is under high load."
   
-  - alert: another-server_high-load
-    expr: node_cpu_seconds_total{job="another-server_node-exporter", mode="iowait"} > 10
+  - alert: another-server_RAM-load
+    expr: node_memory_MemAvailable_bytes{job="another-server_node-exporter"} < 1024*1024*500
     for: 2m
     labels:
       severity: page

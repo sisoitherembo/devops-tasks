@@ -25,6 +25,14 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ['node-exporter:9100']
+    relabel_configs:
+      - source_labels: [__meta_ec2_public_ip]
+        replacement: '${1}:9100'
+        target_label: __address__
+      
+      - source_labels: [__meta_ec2_tag_Name]
+        target_label: instance
+
 
   - job_name: 'another-server_node-exporter'
     scrape_interval: 6s

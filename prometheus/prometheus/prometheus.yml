@@ -21,7 +21,18 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'node-exporter'
-    scrape_interval: 15s
+  - job_name: 'prometeheus_node-exporter'
+    scrape_interval: 5s
     static_configs:
       - targets: ['node-exporter:9100']
+
+  - job_name: 'another-server_node-exporter'
+    scrape_interval: 6s
+    ec2_sd_configs:
+      - region: 'us-east-2'
+        port: 9100
+        filters: 
+          - name: instance-id
+            values:
+              - i-0f0392b24dfb9f621
+

@@ -29,5 +29,5 @@ scrape_configs:
   - job_name: 'another-server_node-exporter'
     scrape_interval: 6s
     ec2_sd_configs:
-      - region: 'us-east-2'
+      - region: us-east-2
         port: 9100

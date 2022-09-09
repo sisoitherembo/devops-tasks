@@ -18,6 +18,7 @@ services:
     networks: 
       - prometheus-net
     restart: always
+    env_file: AWS_KEYS
     deploy: 
       mode: global
 

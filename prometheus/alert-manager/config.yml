@@ -11,8 +11,6 @@ receivers:
   - name: 'slack'
     slack_configs:
     - channel: '#alerting-prometheus'
-      title: '{{ template "alert_title" . }}'
-      text: '{{ template "alert_description" . }}'
 inhibit_rules:
   - source_match:
       severity: 'critical'
@@ -20,5 +18,3 @@ inhibit_rules:
       severity: 'warning'
     equal: ['alertname', 'dev', 'instance']
 
-templates: 
-  - '/etc/alermanager/template.tmp'

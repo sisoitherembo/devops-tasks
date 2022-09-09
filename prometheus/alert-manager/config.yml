@@ -8,7 +8,7 @@ route:
   receiver: 'slack'
 receivers:
   - name: 'slack'
-    slackConfigs:
+    slack_configs:
     - sendResolved: true
       apiURL:
         name: slack-secret

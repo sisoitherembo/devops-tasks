@@ -12,7 +12,7 @@ route:
   repeat_interval: 5m
   receiver: 'slack'
 receivers:
-- name: 'slack'
+  - name: 'slack'
     slackConfigs:
     - sendResolved: true
       apiURL:

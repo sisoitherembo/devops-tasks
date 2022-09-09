@@ -31,8 +31,3 @@ scrape_configs:
     ec2_sd_configs:
       - region: 'us-east-2'
         port: 9100
-        filters: 
-          - name: instance-id
-            values:
-              - i-0f0392b24dfb9f621
-

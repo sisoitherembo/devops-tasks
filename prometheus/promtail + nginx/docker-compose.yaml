@@ -11,6 +11,7 @@ networks:
 services:
   nginx: 
     image: sisoitherembo/nginx-app:latest
+    container_name: nginx-app
     ports:
       - "80:80"
     volumes:
@@ -25,6 +26,7 @@ services:
 
   apache:
     image: sisoitherembo/apache-app:latest
+    container_name: apache-app
     ports:
       - "8080:80"
     volumes:
@@ -37,6 +39,7 @@ services:
 
   promtail:
     image: grafana/promtail:1.4.1
+    container_name: promtail
     networks:
       - app-net
     volumes:

@@ -1,0 +1,72 @@
+verion: "0.0.1"
+
+volumes:
+  promtail-data:
+  nginx-data:
+  apache-data:
+
+networks: 
+  app-net:
+
+services:
+  nginx: 
+    image: sisoitherembo/nginx-app:latest
+    ports:
+      - "80:80"
+    volumes:
+      - nginx-data:/var/log/nginx
+    networks:
+      - app-net
+    depends_on: 
+      - apache
+    restart: always
+    deploy:
+      mode: global
+
+  apache:
+    image: sisoitherembo/apache-app:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - apache-data:/var/log/apache2
+    networks:
+      - app-net
+    restart: always
+    deploy:
+      mode: global
+
+  promtail:
+    image: grafana/promtail:1.4.1
+    networks:
+      - nginx-net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./promtail-config.yml:/etc/promtail/config.yaml:ro
+      - promtail-data:/var/lib/promtail/positions
+    command:
+     - '-config.file=/etc/promtail/promtail.yml'
+    depends_on:
+      - nginx
+    restart: always
+    deploy:
+      mode: global
+
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:v1.3.1
+    container_name: node-exporter
+    volumes:
+      - /:/rootfs:ro
+      - /:/host:ro,rslave
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    command: 
+      - '--path.rootfs=/host'
+      - '--path.procfs=/host/proc' 
+      - '--path.sysfs=/host/sys'
+    ports:
+      - 9100:9100
+    networks:
+      - app-net
+    restart: always
+    deploy:
+      mode: global

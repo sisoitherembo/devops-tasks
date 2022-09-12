@@ -44,7 +44,7 @@ services:
       - app-net
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./promtail-config.yml:/etc/promtail/config.yaml:ro
+      - ./promtail-config.yml:/etc/promtail/promtail.yaml:ro
       - promtail-data:/var/lib/promtail/positions
     command:
      - '-config.file=/etc/promtail/promtail.yml'

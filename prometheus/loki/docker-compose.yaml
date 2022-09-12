@@ -3,6 +3,9 @@ version: "3"
 networks:
   loki:
 
+volumes:
+  grafana-data:
+
 services:
   loki:
     image: grafana/loki:2.6.0
@@ -32,3 +35,5 @@ services:
       - "3000:3000"
     networks:
       - loki
+    volumes:
+      - grafana-data:/var/lib/grafana

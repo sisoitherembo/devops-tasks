@@ -11,7 +11,7 @@ clients:
 
 scrape_configs:
   - job_name: nginx-containers_scrape 
-     static_configs:
+    static_configs:
        labels:
          job: containerlogs
          __path__: /var/lib/docker/containers/*/*.log  # for linux only

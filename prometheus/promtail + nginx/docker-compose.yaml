@@ -1,7 +1,6 @@
 version: "3"
 
 volumes:
-  promtail-data:
   nginx-data:
   apache-data:
 
@@ -45,7 +44,6 @@ services:
     volumes:
       - /var/lib/docker/containers:/var/lib/docker/containers
       - ./promtail-config.yml:/etc/promtail/promtail.yml:ro
-      - promtail-data:/var/lib/promtail/positions
     command:
      - '-config.file=/etc/promtail/promtail.yml'
     depends_on:

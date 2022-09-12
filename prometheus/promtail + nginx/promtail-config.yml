@@ -6,7 +6,7 @@ positions:
   filename: /tmp/positions.yaml
 
 clients:
-  - url: http://172.31.2.73:3100/loki/api/v1/push
+  - url: http://18.188.48.56:3100/loki/api/v1/push
     tenant_id: tenant1
 
 scrape_configs:

@@ -56,10 +56,6 @@ services:
      - '-config.file=/etc/promtail/promtail.yml'
     depends_on:
       - nginx
-    logging:
-      driver: json-file
-      options:
-        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
     restart: always
     deploy:
       mode: global

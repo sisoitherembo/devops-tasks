@@ -18,7 +18,10 @@ services:
       - loki
     volumes:
       - ./loki-config.yml:/etc/loki/config.yaml
-
+    logging:
+      driver: json-file
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
   #promtail:
   #  image: grafana/promtail:2.6.0
   #  container_name: promtail
@@ -39,3 +42,7 @@ services:
       - loki
     volumes:
       - grafana-data:/var/lib/grafana
+    logging:
+      driver: json-file
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"

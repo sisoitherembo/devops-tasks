@@ -22,7 +22,7 @@ services:
     logging:
       driver: json-file
       options:
-         tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
     restart: always
     deploy:
       mode: global
@@ -53,7 +53,7 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers
       - ./promtail-config.yml:/etc/promtail/promtail.yml:ro
     command:
-     - '-config.file=/etc/promtail/promtail.yml'
+      - '-config.file=/etc/promtail/promtail.yml'
     depends_on:
       - nginx
     restart: always

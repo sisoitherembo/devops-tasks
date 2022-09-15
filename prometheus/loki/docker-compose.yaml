@@ -18,20 +18,23 @@ services:
       - loki
     volumes:
       - ./loki-config.yml:/etc/loki/config.yaml
+    restart: always
     logging:
       driver: json-file
       options:
         tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
-  #promtail:
-  #  image: grafana/promtail:2.6.0
-  #  container_name: promtail
-  #  volumes:
-  #      - /var/lib/docker/containers:/var/lib/docker/containers
-  #      - ./promtail-config.yml:/etc/promtail/promtail.yml:ro
-  #      - promtail-data:/var/lib/promtail/positions
-  #  command: -config.file=/etc/promtail/config.yml
-  #  networks:
-  #    - loki
+  
+  promtail:
+    image: grafana/promtail:2.6.0
+    container_name: promtail
+    volumes:
+        - /var/lib/docker/containers:/var/lib/docker/containers
+        - ./promtail-config.yml:/etc/promtail/promtail.yml:ro
+        - promtail-data:/var/lib/promtail/positions
+    command: -config.file=/etc/promtail/config.yml
+    restart: always
+    networks:
+      - loki
 
   grafana:
     image: grafana/grafana:latest
@@ -42,6 +45,7 @@ services:
       - loki
     volumes:
       - grafana-data:/var/lib/grafana
+    restart: always
     logging:
       driver: json-file
       options:

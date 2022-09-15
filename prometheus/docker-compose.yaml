@@ -13,12 +13,18 @@ services:
     volumes: 
       - prometheus_data:/prometheus
       - ./prometheus/:/etc/prometheus
+    command: 
+      - "--web.config.file=web.yml"
     ports:
       - "9090:9090"
     networks: 
       - prometheus-net
     restart: always
     env_file: prometheus/AWS_KEYS
+    logging:
+      driver: json-file
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
     deploy: 
       mode: global
 
@@ -55,8 +61,13 @@ services:
       - '--storage.path=/alertmanager'
     networks: 
       - prometheus-net
+    logging:
+      driver: json-file
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
     deploy: 
       mode: global
+      
       
 #  prometheus-bot:
 #    image: sisoitherembo/telegram-bot:latest

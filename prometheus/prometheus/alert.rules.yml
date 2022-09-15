@@ -15,7 +15,7 @@ groups:
       expr: (1- (avg(irate(node_cpu_seconds_total{job="CPU_node-exporter", mode="idle"}[5m]))))*100  > 50
       labels:
         severity: page
-      annotations:
+      annotations:  
         summary: "Instance {{ $labels.instance }} under high load"
         description: "{{ $labels.instance }} of job {{ $labels.job }} is under high CPU load."
 

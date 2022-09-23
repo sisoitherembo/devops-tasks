@@ -1,0 +1,6 @@
+tls_server_config:
+  cert_file: prometheus.crt
+  key_file: prometheus.key
+
+basic_auth_users:
+  admin: $2b$12$wEysqfheiTu.YpD24HsMYumKv68xI69T.ka/5HKpHiax0m0JwEh8S

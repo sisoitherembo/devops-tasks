@@ -8,13 +8,13 @@ metadata:
     env : prod
 data:
   apache.ports.conf: |
-Listen 8086
-<IfModule ssl_module>
-        Listen 443
-</IfModule>
-<IfModule mod_gnutls.c>
-        Listen 443
-</IfModule>
+        Listen 8086
+        <IfModule ssl_module>
+                Listen 443
+        </IfModule>
+        <IfModule mod_gnutls.c>
+                Listen 443
+        </IfModule>
   nginx.server.conf: |
     upstream apache{
             server localhost:8086;

@@ -28,15 +28,15 @@ spec:
               containerPort: 80
           volumeMounts:
             - name: nginx-config-nginx
-              mountPath: "/etc/nginx/nginx.conf"
+              mountPath: "/etc/nginx/"
               subPath: "nginx.conf"
               readOnly: true
             - name: nginx-config-server
-              mountPath: "/etc/nginx/conf.d/server.conf"
+              mountPath: "/etc/nginx/conf.d/"
               subPath: "server.conf"
               readOnly: true
             - name: nginx-config-roundrobin
-              mountPath: "/etc/nginx/conf.d/roundrobin.conf"
+              mountPath: "/etc/nginx/conf.d/"
               subPath: "roundrobin.conf"
               readOnly: true
           #livenessProbe:

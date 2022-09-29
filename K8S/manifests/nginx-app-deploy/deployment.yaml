@@ -32,12 +32,7 @@ spec:
               subPath: "nginx.conf"
               readOnly: true
             - name: nginx-config-server
-              mountPath: "/etc/nginx/conf.d/server.conf"
-              subPath: "server.conf"
-              readOnly: true
-            - name: nginx-config-roundrobin
-              mountPath: "/etc/nginx/conf.d/roundrobin.conf"
-              subPath: "roundrobin.conf"
+              mountPath: "/etc/nginx/conf.d/"
               readOnly: true
           #livenessProbe:
           #  httpGet:
@@ -109,10 +104,6 @@ spec:
             items:
               - key: "nginx.server.conf"
                 path: "server.conf"
-        - name: nginx-config-roundrobin
-          configMap:
-            name: nginx-app-configmap
-            items:
               - key: "nginx.roundrobin.conf"
                 path: "roundrobin.conf"
         - name: apache-config

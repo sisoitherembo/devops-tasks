@@ -34,6 +34,7 @@ spec:
             - name: nginx-config-server
               mountPath: "/etc/nginx/conf.d"
               readOnly: true
+          
           livenessProbe:
             httpGet:
               scheme: HTTP
@@ -56,6 +57,7 @@ spec:
               initialDelaySeconds: 5
               periodSeconds: 5
 
+
         - name: apache-app 
           image: sisoitherembo/apache-app:k8s
           imagePullPolicy: Always
@@ -68,6 +70,7 @@ spec:
             mountPath: "/etc/apache2/ports.conf"
             subPath: "ports.conf"
             readOnly: true
+          
           livenessProbe:
             httpGet:
               scheme: HTTP
@@ -89,6 +92,8 @@ spec:
                 path: /info.php
               initialDelaySeconds: 5
               periodSeconds: 5
+      
+      
       volumes:
         - name: nginx-config-nginx
           configMap:

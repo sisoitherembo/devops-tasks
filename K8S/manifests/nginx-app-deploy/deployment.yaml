@@ -49,10 +49,10 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           readinessProbe:
-              exec:
-                command:
-                - cat
-                - /home/nginx-user/public_html/index.html
+              httpGet:
+                scheme: HTTP
+                port: http
+                path: /monitoring
               initialDelaySeconds: 5
               periodSeconds: 5
 
@@ -83,10 +83,10 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           readinessProbe:
-              exec:
-                command:
-                - cat
-                - /var/www/html/info.php
+              httpGet:
+                scheme: HTTP
+                port: http
+                path: /
               initialDelaySeconds: 5
               periodSeconds: 5
       volumes:

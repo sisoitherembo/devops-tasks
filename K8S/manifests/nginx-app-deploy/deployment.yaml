@@ -34,28 +34,28 @@ spec:
             - name: nginx-config-server
               mountPath: "/etc/nginx/conf.d"
               readOnly: true
-          #livenessProbe:
-          #  httpGet:
-          #    scheme: http
-          #    port: probe
-          #    path: /monitoring
-          #  initialDelaySeconds: 10
-          #  failureThreshold: 1
-          #  periodSeconds: 10
-          #startupProbe:
-          #  httpGet:
-          #    scheme: http
-          #    port: probe
-          #    path: /monitoring
-          #  failureThreshold: 30
-          #  periodSeconds: 10
-          #readinessProbe:
-          #    exec:
-          #      command:
-          #      - cat
-          #      - /home/nginx-user/public_html/index.html
-          #    initialDelaySeconds: 5
-          #    periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              scheme: http
+              port: probe
+              path: /monitoring
+            initialDelaySeconds: 10
+            failureThreshold: 1
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              scheme: http
+              port: probe
+              path: /monitoring
+            failureThreshold: 30
+            periodSeconds: 10
+          readinessProbe:
+              exec:
+                command:
+                - cat
+                - /home/nginx-user/public_html/index.html
+              initialDelaySeconds: 5
+              periodSeconds: 5
 
         - name: apache-app 
           image: sisoitherembo/apache-app:k8s
@@ -69,28 +69,28 @@ spec:
             mountPath: "/etc/apache2/ports.conf"
             subPath: "ports.conf"
             readOnly: true
-          #livenessProbe:
-          #  httpGet:
-          #    scheme: http
-          #    port: probe
-          #    path: /
-          #  initialDelaySeconds: 10
-          #  failureThreshold: 1
-          #  periodSeconds: 10
-          #startupProbe:
-          #  httpGet:
-          #    scheme: http
-          #    port: probe
-          #    path: /
-          #  failureThreshold: 30
-          #  periodSeconds: 10
-          #readinessProbe:
-          #    exec:
-          #      command:
-          #      - cat
-          #      - /var/www/html/info.php
-          #    initialDelaySeconds: 5
-          #    periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              scheme: http
+              port: probe
+              path: /
+            initialDelaySeconds: 10
+            failureThreshold: 1
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              scheme: http
+              port: probe
+              path: /
+            failureThreshold: 30
+            periodSeconds: 10
+          readinessProbe:
+              exec:
+                command:
+                - cat
+                - /var/www/html/info.php
+              initialDelaySeconds: 5
+              periodSeconds: 5
       volumes:
         - name: nginx-config-nginx
           configMap:

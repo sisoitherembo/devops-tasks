@@ -25,7 +25,7 @@ spec:
             - name: http
               protocol: TCP
               containerPort: 80
-            - name: probePort
+            - name: probe
               protocol: TCP
               containerPort: 80
           volumeMounts:
@@ -34,13 +34,13 @@ spec:
               readOnly: true
           livenessProbe:
             httpGet:
-              port: probePort
+              port: probe
               path: /monitoring
             failureThreshold: 1
             periodSeconds: 10
           startupProbe:
             httpGet:
-              port: probePort
+              port: probe
               path: /monitoring
             failureThreshold: 30
             periodSeconds: 10
@@ -58,7 +58,7 @@ spec:
             - name: http
               protocol: TCP
               containerPort: 8086
-            - name: probePort
+            - name: probe
               protocol: TCP
               containerPort: 8086
           volumeMounts:
@@ -67,13 +67,13 @@ spec:
             readOnly: true
           livenessProbe:
             httpGet:
-              port: probePort
+              port: probe
               path: /
             failureThreshold: 1
             periodSeconds: 10
           startupProbe:
             httpGet:
-              port: probePort
+              port: probe
               path: /
             failureThreshold: 30
             periodSeconds: 10

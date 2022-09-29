@@ -28,7 +28,7 @@ spec:
               containerPort: 80
           volumeMounts:
             - name: nginx-config
-              mountPath: "/etc/nginx/conf.d"
+              mountPath: "/etc/nginx"
               readOnly: true
           #livenessProbe:
           #  httpGet:
@@ -94,16 +94,18 @@ spec:
             name: nginx-app-configmap
             # An array of keys from the ConfigMap to create as files
             items:
-              - key: "server.conf"
-                path: "server.conf"
-              - key: "roundrobin.conf"
-                path: "roundrobin.conf"
+              - key: "nginx.server.conf"
+                path: "conf.d/server.conf"
+              - key: "nginx.roundrobin.conf"
+                path: "conf.d/roundrobin.conf"
+              - key: "nginx.nginx.conf"
+                path: "nginx.conf"
         - name: apache-config
           configMap:
             # Provide the name of the ConfigMap you want to mount.
             name: nginx-app-configmap
             # An array of keys from the ConfigMap to create as files
             items:
-              - key: "ports.conf"
+              - key: "apache.ports.conf"
                 path: "ports.conf"
 

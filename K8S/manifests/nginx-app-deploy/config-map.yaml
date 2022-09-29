@@ -7,7 +7,7 @@ metadata:
     app : nginx-app
     env : prod
 data:
-  ports.conf: |
+  apache.ports.conf: |
         Listen 8086
         <IfModule ssl_module>
                 Listen 443
@@ -15,7 +15,7 @@ data:
         <IfModule mod_gnutls.c>
                 Listen 443
         </IfModule>
-  server.conf: |
+  nginx.server.conf: |
     upstream apache{
             server localhost:8086;
     }
@@ -99,7 +99,43 @@ data:
             root /home/nginx-user/public_html/;
             index app.html;
     }
-  roundrobin.conf: |
+  nginx.nginx.conf : |
+        user  nginx-user;
+        worker_processes  auto;
+
+        error_log  /var/log/nginx/error.log notice;
+        pid        /run/nginx.pid;
+        load_module "modules/ngx_http_image_filter_module.so";
+
+
+
+        events {
+            worker_connections  1024;
+        }
+
+
+        http {
+            include       /etc/nginx/mime.types;
+            default_type  application/octet-stream;
+
+            log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                              '$status $body_bytes_sent "$http_referer" '
+                              '"$http_user_agent" "$http_x_forwarded_for"'
+                              '[uri - $uri] [server_name - $server_name] [file - $request_filename]';
+
+            access_log  /var/log/nginx/access.log  main;
+
+            sendfile        on;
+            #tcp_nopush     on;
+
+            keepalive_timeout  65;
+
+            #gzip  on;
+
+            include /etc/nginx/conf.d/*.conf;
+            include /etc/nginx/sites-enabled/*;
+        }
+  nginx.roundrobin.conf: |
     upstream balance {
         server localhost:8081;
         server localhost:8082;   

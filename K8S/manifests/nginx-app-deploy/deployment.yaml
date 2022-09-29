@@ -37,15 +37,14 @@ spec:
           livenessProbe:
             httpGet:
               scheme: HTTP
-              port: probe
+              port: http
               path: /monitoring
-            initialDelaySeconds: 10
             failureThreshold: 1
             periodSeconds: 10
           startupProbe:
             httpGet:
               scheme: HTTP
-              port: probe
+              port: http
               path: /monitoring
             failureThreshold: 30
             periodSeconds: 10
@@ -72,15 +71,14 @@ spec:
           livenessProbe:
             httpGet:
               scheme: HTTP
-              port: probe
+              port: http
               path: /
-            initialDelaySeconds: 10
             failureThreshold: 1
             periodSeconds: 10
           startupProbe:
             httpGet:
               scheme: HTTP
-              port: probe
+              port: http
               path: /
             failureThreshold: 30
             periodSeconds: 10

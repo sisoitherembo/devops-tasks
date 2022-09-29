@@ -7,7 +7,7 @@ metadata:
     app : nginx-app
     env : prod
 data:
-  apache.ports.conf: |
+  ports.conf: |
         Listen 8086
         <IfModule ssl_module>
                 Listen 443
@@ -15,7 +15,7 @@ data:
         <IfModule mod_gnutls.c>
                 Listen 443
         </IfModule>
-  nginx.server.conf: |
+  server.conf: |
     upstream apache{
             server localhost:8086;
     }
@@ -99,7 +99,7 @@ data:
             root /home/nginx-user/public_html/;
             index app.html;
     }
-  nginx.roundrobin.conf: |
+  roundrobin.conf: |
     upstream balance {
         server localhost:8081;
         server localhost:8082;   

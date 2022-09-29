@@ -28,7 +28,7 @@ spec:
               containerPort: 80
           volumeMounts:
             - name: nginx-config
-              mountPath: "/etc/nginx"
+              mountPath: "/etc/nginx/"
               readOnly: true
           #livenessProbe:
           #  httpGet:
@@ -62,7 +62,7 @@ spec:
               containerPort: 8086
           volumeMounts:
           - name: apache-config
-            mountPath: "/etc/apache2"
+            mountPath: "/etc/apache2/"
             readOnly: true
           #livenessProbe:
           #  httpGet:

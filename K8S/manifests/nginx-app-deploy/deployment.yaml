@@ -27,8 +27,17 @@ spec:
               protocol: TCP
               containerPort: 80
           volumeMounts:
-            - name: nginx-config
-              mountPath: "/etc/nginx/"
+            - name: nginx-config-nginx
+              mountPath: "/etc/nginx/nginx.conf"
+              subPath: "nginx.conf"
+              readOnly: true
+            - name: nginx-config-server
+              mountPath: "/etc/nginx/conf.d/server.conf"
+              subPath: "server.conf"
+              readOnly: true
+            - name: nginx-config-roundrobin
+              mountPath: "/etc/nginx/conf.d/roundrobin.conf"
+              subPath: "roundrobin.conf"
               readOnly: true
           #livenessProbe:
           #  httpGet:
@@ -62,7 +71,8 @@ spec:
               containerPort: 8086
           volumeMounts:
           - name: apache-config
-            mountPath: "/etc/apache2/"
+            mountPath: "/etc/apache2/ports.conf"
+            subPath: "ports.conf"
             readOnly: true
           #livenessProbe:
           #  httpGet:
@@ -87,24 +97,27 @@ spec:
           #    initialDelaySeconds: 5
           #    periodSeconds: 5
       volumes:
-        # You set volumes at the Pod level, then mount them into containers inside that Pod
-        - name: nginx-config
+        - name: nginx-config-nginx
           configMap:
-            # Provide the name of the ConfigMap you want to mount.
             name: nginx-app-configmap
-            # An array of keys from the ConfigMap to create as files
+            items:
+              - key: "nginx.nginx.conf"
+                path: "nginx.conf"
+        - name: nginx-config-server
+          configMap:
+            name: nginx-app-configmap
             items:
               - key: "nginx.server.conf"
                 path: "conf.d/server.conf"
+        - name: nginx-config-roundrobin
+          configMap:
+            name: nginx-app-configmap
+            items:
               - key: "nginx.roundrobin.conf"
                 path: "conf.d/roundrobin.conf"
-              - key: "nginx.nginx.conf"
-                path: "nginx.conf"
         - name: apache-config
           configMap:
-            # Provide the name of the ConfigMap you want to mount.
             name: nginx-app-configmap
-            # An array of keys from the ConfigMap to create as files
             items:
               - key: "apache.ports.conf"
                 path: "ports.conf"

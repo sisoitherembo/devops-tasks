@@ -3,7 +3,7 @@ kind: Service
 metadata:
   annotations:
   name: nginx-app-service
-  namespace: nginx
+  namespace: nginx-app
 spec:
   ports:
     - port: 80

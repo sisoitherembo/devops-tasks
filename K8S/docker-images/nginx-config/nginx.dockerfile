@@ -9,7 +9,10 @@ EXPOSE 8081/tcp
 EXPOSE 8082/tcp
 WORKDIR ${HOME}
 
-
+#RUN  apk add snap && \
+#        snap install -y --classic  certbot && \
+#        ln -s /snap/bin/certbot /usr/bin/certbot && \
+#        certbot -n -d sisoi-k8s.ddns.net -m dmitri20023zarubo@gmail.com --nginx
 RUN  adduser -D ${USER} \
         && addgroup ${USER} ${USER} 
        

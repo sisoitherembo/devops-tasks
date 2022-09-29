@@ -11,11 +11,11 @@ spec:
       targetPort: 80
       nodePort: 30000
       protocol: TCP
-    - name: https
-      port: 443
-      targetPort: 443
-      nodePort: 31000
-      protocol: TCP
+    #- name: https
+    #  port: 443
+    #  targetPort: 443
+    #  nodePort: 31000
+    #  protocol: TCP
   selector:
     app: nginx-app
     env: prod

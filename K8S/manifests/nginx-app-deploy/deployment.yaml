@@ -44,7 +44,7 @@ spec:
             periodSeconds: 10
           startupProbe:
             httpGet:
-              scheme: http
+              scheme: HTTP
               port: probe
               path: /monitoring
             failureThreshold: 30
@@ -61,7 +61,7 @@ spec:
           image: sisoitherembo/apache-app:k8s
           imagePullPolicy: Always
           ports:
-            - name: http
+            - name: HTTP
               protocol: TCP
               containerPort: 8086
           volumeMounts:
@@ -71,7 +71,7 @@ spec:
             readOnly: true
           livenessProbe:
             httpGet:
-              scheme: http
+              scheme: HTTP
               port: probe
               path: /
             initialDelaySeconds: 10
@@ -79,7 +79,7 @@ spec:
             periodSeconds: 10
           startupProbe:
             httpGet:
-              scheme: http
+              scheme: HTTP
               port: probe
               path: /
             failureThreshold: 30

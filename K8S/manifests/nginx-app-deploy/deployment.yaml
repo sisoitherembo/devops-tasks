@@ -72,21 +72,21 @@ spec:
             httpGet:
               scheme: HTTP
               port: http
-              path: /
+              path: /info.php
             failureThreshold: 1
             periodSeconds: 10
           startupProbe:
             httpGet:
               scheme: HTTP
               port: http
-              path: /
+              path: /info.php
             failureThreshold: 30
             periodSeconds: 10
           readinessProbe:
               httpGet:
                 scheme: HTTP
                 port: http
-                path: /
+                path: /info.php
               initialDelaySeconds: 5
               periodSeconds: 5
       volumes:

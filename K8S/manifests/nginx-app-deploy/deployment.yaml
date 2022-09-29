@@ -36,7 +36,7 @@ spec:
               readOnly: true
           livenessProbe:
             httpGet:
-              scheme: http
+              scheme: HTTP
               port: probe
               path: /monitoring
             initialDelaySeconds: 10
@@ -61,7 +61,7 @@ spec:
           image: sisoitherembo/apache-app:k8s
           imagePullPolicy: Always
           ports:
-            - name: HTTP
+            - name: http
               protocol: TCP
               containerPort: 8086
           volumeMounts:

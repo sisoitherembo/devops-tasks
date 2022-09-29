@@ -51,7 +51,7 @@ spec:
                 - /home/nginx-user/public_html/index.html
               initialDelaySeconds: 5
               periodSeconds: 5
-  
+
         - name: apache-app 
           image: sisoitherembo/apache-app:k8s   
           ports:
@@ -69,14 +69,14 @@ spec:
             httpGet:
               port: probePort
               path: /
-              failureThreshold: 1
-              periodSeconds: 10
+            failureThreshold: 1
+            periodSeconds: 10
           startupProbe:
             httpGet:
               port: probePort
               path: /
-              failureThreshold: 30
-              periodSeconds: 10
+            failureThreshold: 30
+            periodSeconds: 10
           readinessProbe:
               exec:
                 command:
@@ -104,4 +104,4 @@ spec:
             items:
             - key: "apache.ports.conf"
               path: "ports.conf"
-  
+

@@ -2,7 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: nginx-app-deployment
-  namespace: nginx-app
   labels:
     app: nginx-app
     env: prod 

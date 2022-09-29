@@ -36,14 +36,14 @@ spec:
             httpGet:
               port: probePort
               path: /monitoring
-              failureThreshold: 1
-              periodSeconds: 10
+            failureThreshold: 1
+            periodSeconds: 10
           startupProbe:
             httpGet:
               port: probePort
               path: /monitoring
-              failureThreshold: 30
-              periodSeconds: 10
+            failureThreshold: 30
+            periodSeconds: 10
           readinessProbe:
               exec:
                 command:

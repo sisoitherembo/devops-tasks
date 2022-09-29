@@ -28,11 +28,11 @@ spec:
               containerPort: 80
           volumeMounts:
             - name: nginx-config-nginx
-              mountPath: "/etc/nginx/"
+              mountPath: "/etc/nginx/nginx.conf"
               subPath: "nginx.conf"
               readOnly: true
             - name: nginx-config-server
-              mountPath: "/etc/nginx/conf.d/"
+              mountPath: "/etc/nginx/conf.d"
               readOnly: true
           #livenessProbe:
           #  httpGet:

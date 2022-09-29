@@ -17,91 +17,91 @@ spec:
       labels:
         app: nginx-app
         env : prod
-  spec:
-    containers:
-      - name: nginx-app
-        image: sisoitherembo/nginx-app:k8s
-        ports:
-          - name: http
-            protocol: TCP
-            containerPort: 80
-          - name: probePort
-            protocol: TCP
-            containerPort: 80
-        volumeMounts:
-          - name: nginx-config
-            mountPath: "/etc/nginx/conf.d"
+    spec:
+      containers:
+        - name: nginx-app
+          image: sisoitherembo/nginx-app:k8s
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 80
+            - name: probePort
+              protocol: TCP
+              containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: "/etc/nginx/conf.d"
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              port: probePort
+              path: /monitoring
+              failureThreshold: 1
+              periodSeconds: 10
+          startupProbe:
+            httpGet:
+              port: probePort
+              path: /monitoring
+              failureThreshold: 30
+              periodSeconds: 10
+          readinessProbe:
+              exec:
+                command:
+                - cat
+                - /home/nginx-user/public_html/index.html
+              initialDelaySeconds: 5
+              periodSeconds: 5
+  
+        - name: apache-app 
+          image: sisoitherembo/apache-app:k8s   
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 8086
+            - name: probePort
+              protocol: TCP
+              containerPort: 8086
+          volumeMounts:
+          - name: apache-config
+            mountPath: "/etc/apache2/"
             readOnly: true
-        livenessProbe:
-          httpGet:
-            port: probePort
-            path: /monitoring
-            failureThreshold: 1
-            periodSeconds: 10
-        startupProbe:
-          httpGet:
-            port: probePort
-            path: /monitoring
-            failureThreshold: 30
-            periodSeconds: 10
-        readinessProbe:
-            exec:
-              command:
-              - cat
-              - /home/nginx-user/public_html/index.html
-            initialDelaySeconds: 5
-            periodSeconds: 5
-
-      - name: apache-app 
-        image: sisoitherembo/apache-app:k8s   
-        ports:
-          - name: http
-            protocol: TCP
-            containerPort: 8086
-          - name: probePort
-            protocol: TCP
-            containerPort: 8086
-        volumeMounts:
+          livenessProbe:
+            httpGet:
+              port: probePort
+              path: /
+              failureThreshold: 1
+              periodSeconds: 10
+          startupProbe:
+            httpGet:
+              port: probePort
+              path: /
+              failureThreshold: 30
+              periodSeconds: 10
+          readinessProbe:
+              exec:
+                command:
+                - cat
+                - /var/www/html/info.php
+              initialDelaySeconds: 5
+              periodSeconds: 5
+      volumes:
+        # You set volumes at the Pod level, then mount them into containers inside that Pod
+        - name: nginx-config
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: nginx-app-configmap
+            # An array of keys from the ConfigMap to create as files
+            items:
+            - key: "nginx.server.conf"
+              path: "server.conf"
+            - key: "nginx.roundrobin.conf"
+              path: "round.conf"
         - name: apache-config
-          mountPath: "/etc/apache2/"
-          readOnly: true
-        livenessProbe:
-          httpGet:
-            port: probePort
-            path: /
-            failureThreshold: 1
-            periodSeconds: 10
-        startupProbe:
-          httpGet:
-            port: probePort
-            path: /
-            failureThreshold: 30
-            periodSeconds: 10
-        readinessProbe:
-            exec:
-              command:
-              - cat
-              - /var/www/html/info.php
-            initialDelaySeconds: 5
-            periodSeconds: 5
-    volumes:
-      # You set volumes at the Pod level, then mount them into containers inside that Pod
-      - name: nginx-config
-        configMap:
-          # Provide the name of the ConfigMap you want to mount.
-          name: nginx-app-configmap
-          # An array of keys from the ConfigMap to create as files
-          items:
-          - key: "nginx.server.conf"
-            path: "server.conf"
-          - key: "nginx.roundrobin.conf"
-            path: "round.conf"
-      - name: apache-config
-        configMap:
-          # Provide the name of the ConfigMap you want to mount.
-          name: nginx-app-configmap
-          # An array of keys from the ConfigMap to create as files
-          items:
-          - key: "apache.ports.conf"
-            path: "ports.conf"
-
+          configMap:
+            # Provide the name of the ConfigMap you want to mount.
+            name: nginx-app-configmap
+            # An array of keys from the ConfigMap to create as files
+            items:
+            - key: "apache.ports.conf"
+              path: "ports.conf"
+  

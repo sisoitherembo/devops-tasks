@@ -54,7 +54,6 @@ spec:
                 scheme: HTTP
                 port: http
                 path: /
-              initialDelaySeconds: 5
               periodSeconds: 5
 
 
@@ -90,7 +89,6 @@ spec:
                 scheme: HTTP
                 port: http
                 path: /info.php
-              initialDelaySeconds: 5
               periodSeconds: 5
       
       

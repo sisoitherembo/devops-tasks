@@ -38,21 +38,21 @@ spec:
             httpGet:
               scheme: HTTP
               port: http
-              path: /monitoring
+              path: /
             failureThreshold: 1
             periodSeconds: 10
           startupProbe:
             httpGet:
               scheme: HTTP
               port: http
-              path: /monitoring
+              path: /
             failureThreshold: 30
             periodSeconds: 10
           readinessProbe:
               httpGet:
                 scheme: HTTP
                 port: http
-                path: /monitoring
+                path: /
               initialDelaySeconds: 5
               periodSeconds: 5
 

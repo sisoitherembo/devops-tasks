@@ -5,7 +5,7 @@ metadata:
 subjects:
     - kind: ServiceAccount
       name: loki-promtail  # your promtail sa
-      namespace: loki
+      namespace: default
 roleRef:
   kind: ClusterRole
   name: promtail-clusterrole

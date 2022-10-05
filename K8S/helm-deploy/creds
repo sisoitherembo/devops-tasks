@@ -1,4 +1,4 @@
-4msS5HNbKsEB9t5m4OP7MO91WMe6z33LeqMmkCuO
+NPcr9uEDKhsFFvoU0Pb4cxX55Y1OBpAGhr4mDoVg
 
 helm install prometheus prometheus-community/prometheus --set "alertmanager.persistentVolume.storageClass=local-storage,server.persistentVolume.storageClass=local-storage"
 helm install grafana grafana/grafana --set "persistence.enabled=true,persistence.storageClassName=local-storage"

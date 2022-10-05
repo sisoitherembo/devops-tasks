@@ -12,11 +12,3 @@ spec:
   storageClassName: local-storage
   local:
     path: /mnt/pv-alertmanager
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - kub-node-1

@@ -4,7 +4,7 @@ metadata:
   name: pv-prometheus
 spec:
   capacity:
-    storage: 2Gi
+    storage: 8Gi
   volumeMode: Filesystem
   accessModes:
   - ReadWriteOnce

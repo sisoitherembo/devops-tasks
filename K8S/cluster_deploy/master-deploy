@@ -1,7 +1,6 @@
-
 ###########FOR MASTER NODE############
 #update apt
-sudo apt update
+sudo apt update 
 sudo apt -y full-upgrade
 [ -f /var/run/reboot-required ] && sudo reboot -f
 #download kube-utils
@@ -9,15 +8,15 @@ sudo apt -y install curl apt-transport-https
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt update
-sudo apt -y install vim git curl wget kubelet kubeadm kubectl
-sudo apt-mark hold kubelet kubeadm kubectl
+sudo apt -y install vim git curl wget kubelet=1.21.3-00 kubectl=1.21.3-00 kubeadm=1.21.3-00
+sudo apt-mark hold kubelet kubectlkubeadm
 
 #disable swap
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 #sudo vim /etc/fstab #comment line "#/swap.img	none	swap	sw	0	0"
 #run to check that swap is off
 sudo swapoff -a
-sudo mount -a
+sudo mount -a 
 free -h
 
 #enable kernel modules and configure sysctl

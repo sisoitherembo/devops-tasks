@@ -34,7 +34,6 @@ spec:
             - name: nginx-config-server
               mountPath: "/etc/nginx/conf.d"
               readOnly: true
-          
           livenessProbe:
             httpGet:
               scheme: HTTP
@@ -55,8 +54,14 @@ spec:
                 port: http
                 path: /
               periodSeconds: 5
-
-
+          resources:
+            limits:
+              cpu: 200m
+              memory: 400Mi
+            requests:
+              cpu: 200m
+              memory: 400Mi
+            
         - name: apache-app 
           image: sisoitherembo/apache-app:k8s
           imagePullPolicy: Always
@@ -69,7 +74,6 @@ spec:
             mountPath: "/etc/apache2/ports.conf"
             subPath: "ports.conf"
             readOnly: true
-          
           livenessProbe:
             httpGet:
               scheme: HTTP
@@ -90,8 +94,14 @@ spec:
                 port: http
                 path: /info.php
               periodSeconds: 5
-      
-      
+          resources:
+            limits:
+              cpu: 200m
+              memory: 400Mi
+            requests:
+              cpu: 200m
+              memory: 400Mi
+            
       volumes:
         - name: nginx-config-nginx
           configMap:

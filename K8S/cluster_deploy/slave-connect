@@ -9,7 +9,7 @@ sudo apt -y install curl apt-transport-https
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt update
-sudo apt -y install vim git curl wget kubelet kubeadm kubectl
+sudo apt -y install vim git curl wget kubelet=1.21.3-00 kubectl=1.21.3-00 kubeadm=1.21.3-00
 sudo apt-mark hold kubelet kubeadm kubectl
 
 #disable swap
@@ -56,6 +56,8 @@ sudo systemctl status crio
 
 #enable kubelet
 sudo systemctl enable kubelet
-
-kubeadm join 172.30.1.79:6443 --token 6m818u.bauejqx46xhx7sff \
-        --discovery-token-ca-cert-hash sha256:4a5cd01e19abdb49082519ca1edcfad70398cb2a1a35a5e95c8d549658cc78f2
+mkdir -p $HOME/.kube
+sudo cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+sudo kubeadm join 172.30.1.122:6443 --token z5qis7.i31s8qiz0pg9ey1y \
+        --discovery-token-ca-cert-hash sha256:cd28a77dfc1227fb882d1dbbb65b69af6069454e1bf347d79f4158fd24ad22ac

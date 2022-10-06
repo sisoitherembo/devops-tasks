@@ -2005,7 +2005,7 @@ extraEnvVars: []
 
 ## See: https://gitlab.com/kube-ops/helm/apps/promtail/-/blob/master/values.yaml
 promtail:
-  enabled: true
+  enabled: false
 
   lokiUrl: http://loki/loki/api/v1/push
 

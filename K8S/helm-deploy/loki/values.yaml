@@ -1,0 +1,2046 @@
+# Default values.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# nameOverride -- Overrides the chart name
+nameOverride: ""
+# fullnameOverride -- Overrides the full name
+fullnameOverride: ""
+
+#
+# -------------------------------------------------------------------------------------------------------------------------------------------- Global
+#
+
+## Global settings used by this chart and subcharts
+global:
+  # global.imagePullPolicy -- Image download policy
+  # ref: https://kubernetes.io/docs/concepts/containers/images/#updating-images
+  imagePullPolicy: IfNotPresent
+  # imagePullPolicy: Always
+
+  # global.imagePullSecrets -- List of the Docker registry credentials
+  # ref: https://kubernetes.io/docs/concepts/containers/images/#updating-images
+  imagePullSecrets: []
+  # imagePullSecrets:
+  #   - name: some-registry-credentials
+  #   - name: other-registry-credentials
+
+#
+# -------------------------------------------------------------------------------------------------------------------------------------------- Config
+#
+
+# tracing -- Configuration for tracing
+tracing:
+  jaegerAgentHost: ""
+  jaegerAgentPort: 6831
+  jaegerServiceName: ""
+  jaegerTags: ""
+  # tracing.enabled -- Whether or not tracing should be enabled.
+  enabled: false
+
+# target -- The module to run Loki with. Supported values all, distributor, ingester, querier, query-frontend, table-manager.
+target: all
+
+# -- Enables authentication through the X-Scope-OrgID header, which must be present if true. If false, the OrgID will always be set to "fake".
+authEnabled: false
+
+server:
+  # -- HTTP server listen host
+  httpPort: 3100
+  # -- gRPC server listen port
+  grpcPort: 9095
+  # -- Timeout for graceful shutdowns
+  gracefulShutdownTimeout: 30s
+  # -- Read timeout for HTTP server
+  httpReadTimeout: 30s
+  # -- Write timeout for HTTP server
+  httpWriteTimeout: 30s
+  # -- Idle timeout for HTTP server
+  httpIdleTimeout: 120s
+  # -- Max gRPC message size that can be received
+  grpcMaxRecvMsgSize: 4194304
+  # -- Max gRPC message size that can be sent
+  grpcMaxSendMsgSize: 4194304
+  # -- Limit on the number of concurrent streams for gRPC calls (0 = unlimited)
+  grpcMaxConcurrentStreams: 100
+  # -- Log only messages with the given severity or above. Supported values [debug, info, warn, error]
+  # -- Base path to serve all API routes from (e.g., /v1/).
+  httpPrefix: ""
+
+distributor: {}
+  # ring:
+    # distributor.ring.heartbeatTimeout -- The heartbeat timeout after which ingesters are skipped for reading and writing.
+    # heartbeatTimeout: 1m
+    # kvstore:
+      # # distributor.ring.kvstore.store -- The backend storage to use for the ring. Supported values are consul, etcd, inmemory, memberlist
+      # store: consul
+      # # distributor.ring.kvstore.prefix -- The prefix for the keys in the store. Should end with a /.
+      # prefix: collectors/
+      # # distributor.ring.kvstore.consul -- Configuration for a Consul client. Only applies if store is "consul"
+      # consul:
+        # # distributor.ring.kvstore.consul.host -- The hostname and port of Consul.
+        # host: localhost:8500
+        # # distributor.ring.kvstore.consul.aclToken -- The ACL Token used to interact with Consul.
+        # aclToken: ""
+        # # distributor.ring.kvstore.consul.httpClientTimeout -- The HTTP timeout when communicating with Consul
+        # httpClientTimeout: 20s
+        # # distributor.ring.kvstore.consul.consistentReads -- Whether or not consistent reads to Consul are enabled.
+        # consistentReads: true
+
+      # distributor.ring.kvstore.etcd -- Configuration for an ETCD v3 client. Only applies if store is "etcd"
+      # etcd:
+        # # distributor.ring.kvstore.etcd.endpoints -- The etcd endpoints to connect to.
+        # endpoints: []
+        # # distributor.ring.kvstore.etcd.dialTimeout -- The dial timeout for the etcd connection.
+        # dialTimeout: 10s
+        # # distributor.ring.kvstore.etcd.maxRetries -- The maximum number of retries to do for failed ops.
+        # maxRetries: 10
+
+      # distributor.ring.kvstore.memberlist -- Configuration for Gossip memberlist. Only applies if store is "memberlist"
+      # memberlist:
+        # # distributor.ring.kvstore.memberlist.nodeName -- Name of the node in memberlist cluster. Defaults to hostname.
+        # nodeName: ""
+        # # distributor.ring.kvstore.memberlist.randomizeNodeName -- Add random suffix to the node name.
+        # randomizeNodeName: true
+        # # distributor.ring.kvstore.memberlist.streamTimeout -- The timeout for establishing a connection with a remote node, and for read/write operations. Uses memberlist LAN defaults if 0.
+        # streamTimeout: 0s
+        # # distributor.ring.kvstore.memberlist.retransmitFactor -- Multiplication factor used when sending out messages (factor * log(N+1)).
+        # retransmitFactor: 0
+        # # distributor.ring.kvstore.memberlist.pullPushInterval -- How often to use pull/push sync. Uses memberlist LAN defaults if 0.
+        # pullPushInterval: 0s
+        # # distributor.ring.kvstore.memberlist.gossipInterval -- How often to gossip. Uses memberlist LAN defaults if 0.
+        # gossipInterval: 0s
+        # # distributor.ring.kvstore.memberlist.gossipNodes -- How many nodes to gossip to. Uses memberlist LAN defaults if 0.
+        # gossipNodes: 0
+        # # distributor.ring.kvstore.memberlist.gossipToDeadNodesTime -- How long to keep gossiping to dead nodes, to give them chance to refute their death. Uses memberlist LAN defaults if 0.
+        # gossipToDeadNodesTime: 0s
+        # # distributor.ring.kvstore.memberlist.deadNodeReclaimTime -- How soon can dead node's name be reclaimed with new address. Defaults to 0, which is disabled.
+        # deadNodeReclaimTime: 0s
+        # # distributor.ring.kvstore.memberlist.joinMembers -- Other cluster members to join. Can be specified multiple times.
+        # # It can be an IP, hostname or an entry specified in the DNS Service Discovery format (see https://cortexmetrics.io/docs/configuration/arguments/#dns-service-discovery for more details).
+        # joinMembers: ""
+        # # distributor.ring.kvstore.memberlist.minJoinBackoff -- Min backoff duration to join other cluster members.
+        # minJoinBackoff: 1s
+        # # distributor.ring.kvstore.memberlist.maxJoinBackoff -- Max backoff duration to join other cluster members.
+        # maxJoinBackoff: 1m
+        # # distributor.ring.kvstore.memberlist.maxJoinRetries -- Max number of retries to join other cluster members.
+        # maxJoinRetries: 10
+        # # distributor.ring.kvstore.memberlist.abortIfClusterJoinFails -- If this node fails to join memberlist cluster, abort.
+        # abortIfClusterJoinFails: true
+        # # distributor.ring.kvstore.memberlist.rejoinInterval -- If not 0, how often to rejoin the cluster. Occasional rejoin can help to fix the cluster split issue, and is harmless otherwise.
+        # # For example when using only few components as a seed nodes (via -memberlist.join), then it's recommended to use rejoin.
+        # # If -memberlist.join points to dynamic service that resolves to all gossiping nodes (eg. Kubernetes headless service), then rejoin is not needed.
+        # rejoinInterval: 0s
+        # # distributor.ring.kvstore.memberlist.leftIngestersTimeout -- How long to keep LEFT ingesters in the ring.
+        # leftIngestersTimeout: 5m
+        # # distributor.ring.kvstore.memberlist.leaveTimeout -- Timeout for leaving memberlist cluster.
+        # leaveTimeout: 5s
+        # # distributor.ring.kvstore.memberlist.bindAddr -- IP address to listen on for gossip messages. Multiple addresses may be specified.
+        # bindAddr: 0.0.0.0
+        # # distributor.ring.kvstore.memberlist.bindPort -- Port to listen on for gossip messages.
+        # bindPort: 7946
+        # # distributor.ring.kvstore.memberlist.packetDialTimeout -- Timeout used when connecting to other nodes to send packet.
+        # packetDialTimeout: 5s
+        # # distributor.ring.kvstore.memberlist.packetWriteTimeout -- Timeout for writing 'packet' data.
+        # packetWriteTimeout: 5s
+
+# querier -- Configures the querier. Only appropriate when running all modules or just the querier.
+querier:
+  # querier.queryTimeout -- Timeout when querying ingesters or storage during the execution of a query request.
+  queryTimeout: 1m
+  # querier.tailMaxDuration -- Maximum duration for which the live tailing requests should be served.
+  tailMaxDuration: 1h
+  # querier.extraQueryDelay -- Time to wait before sending more than the minimum successful query requests.
+  extraQueryDelay: 0s
+  # querier.queryIngestersWithin -- Maximum lookback beyond which queries are not sent to ingester. 0 means all queries are sent to ingester.
+  queryIngestersWithin: 0s
+  # querier.engine -- Configuration options for the LogQL engine.
+  engine:
+    # querier.engine.timeout -- Timeout for query execution
+    timeout: 3m
+    # querier.engine.maxLookBackPeriod -- The maximum amount of time to look back for log lines. Only applicable for instant log queries.
+    maxLookBackPeriod: 30s
+
+# frontend -- Configures the Loki query-frontend.
+frontend:
+  # frontend.maxOutstandingPerTenant -- Maximum number of outstanding requests per tenant per frontend; requests beyond this error with HTTP 429.
+  maxOutstandingPerTenant: 100
+  # frontend.compressResponses -- Compress HTTP responses.
+  compressResponses: false
+  # frontend.downstreamUrl -- URL of downstream Prometheus.
+  downstreamUrl: "prometheus-server "
+  # frontend.logQueriesLongerThan -- Log queries that are slower than the specified duration. Set to 0 to disable. Set to < 0 to enable on all queries.
+  logQueriesLongerThan: 0s
+
+# queryRange -- Configures the query splitting and caching in the Loki query-frontend.
+queryRange: {}
+  # # queryRange.splitQueriesByInterval -- Split queries by an interval and execute in parallel, 0 disables it. You
+  # # should use in multiple of 24 hours (same as the storage bucketing scheme),
+  # # to avoid queriers downloading and processing the same chunks. This also
+  # # determines how cache keys are chosen when result caching is enabled
+  # splitQueriesByInterval: 0s
+  # # queryRange.alignQueriesWithStep -- Mutate incoming queries to align their start and end with their step.
+  # alignQueriesWithStep: false
+  # # queryRange.cacheResults -- Cache query results.
+  # cacheResults: false
+  # # queryRange.maxRetries -- Maximum number of retries for a single request; beyond this, the downstream error is returned.
+  # maxRetries: 5
+  # # queryRange.paralleliseShardableQueries -- Perform query parallelisations based on storage sharding configuration and query ASTs. This feature is supported only by the chunks storage engine.
+  # paralleliseShardableQueries: false
+  # resultsCache:
+  #   # queryRange.resultsCache.cache -- The CLI flags prefix for this block config is: frontend
+  #   cache:
+  #     # queryRange.resultsCache.cache.enableFifocache -- Enable in-memory cache.
+  #     enableFifocache: false
+  #     # queryRange.resultsCache.cache.defaultValidity -- The default validity of entries for caches unless overridden.
+  #     defaultValidity: 1h
+  #     # queryRange.resultsCache.cache.background -- Configures the background cache when memcached is used.
+  #     background:
+  #       # queryRange.resultsCache.cache.background.writebackGoroutines -- How many goroutines to use to write back to memcached.
+  #       writebackGoroutines: 10
+  #       # queryRange.resultsCache.cache.background.writebackBuffer -- How many chunks to buffer for background write back to memcached.
+  #       writebackBuffer: 10000
+  #     # queryRange.resultsCache.cache.memcached -- Configures memcached settings.
+  #     memcached:
+  #       # queryRange.resultsCache.cache.memcached.expiration -- Configures how long keys stay in memcached.
+  #       expiration: 1h
+  #       # queryRange.resultsCache.cache.memcached.batchSize -- Configures how many keys to fetch in each batch request.
+  #       batchSize: 262144
+  #       # queryRange.resultsCache.cache.memcached.parallelism -- Maximum active requests to memcached.
+  #       parallelism: 100
+  #     # queryRange.resultsCache.cache.memcachedClient -- Configures how to connect to one or more memcached servers.
+  #     memcachedClient:
+  #       # queryRange.resultsCache.cache.memcachedClient.host -- The hostname to use for memcached services when caching chunks. If empty, no memcached will be used. A SRV lookup will be used.
+  #       host: ""
+  #       # queryRange.resultsCache.cache.memcachedClient.service -- SRV service used to discover memcached servers.
+  #       service: memcached
+  #       # queryRange.resultsCache.cache.memcachedClient.timeout -- Maximum time to wait before giving up on memcached requests.
+  #       timeout: 100ms
+  #       # queryRange.resultsCache.cache.memcachedClient.maxIdleConns -- The maximum number of idle connections in the memcached client pool.
+  #       maxIdleConns: 100
+  #       # queryRange.resultsCache.cache.memcachedClient.updateInterval -- The period with which to poll the DNS for memcached servers.
+  #       updateInterval: 1m
+  #       # queryRange.resultsCache.cache.memcachedClient.consistentHash -- Whether or not to use a consistent hash to discover multiple memcached servers.
+  #       consistentHash: true
+  #     redis:
+  #       # queryRange.resultsCache.cache.redis.endpoint -- Redis Server endpoint to use for caching. A comma-separated list of endpoints for Redis Cluster or Redis Sentinel. If empty, no redis will be used.
+  #       endpoint: ""
+  #       # queryRange.resultsCache.cache.redis.masterName -- Redis Sentinel master name. An empty string for Redis Server or Redis Cluster.
+  #       masterName: ""
+  #       # queryRange.resultsCache.cache.redis.timeout -- Maximum time to wait before giving up on redis requests.
+  #       timeout: 100ms
+  #       # queryRange.resultsCache.cache.redis.expiration -- How long keys stay in the redis.
+  #       expiration: 0s
+  #       # queryRange.resultsCache.cache.redis.db -- Database index.
+  #       db: 1
+  #       # queryRange.resultsCache.cache.redis.poolSize -- Maximum number of connections in the pool.
+  #       poolSize: 0
+  #       # queryRange.resultsCache.cache.redis.password -- Password to use when connecting to redis.
+  #       password: ""
+  #       # queryRange.resultsCache.cache.redis.idleTimeout -- Close connections after remaining idle for this duration. If the value is zero, then idle connections are not closed.
+  #       idleTimeout: 0s
+  #       # queryRange.resultsCache.cache.redis.maxConnectionAge -- Close connections older than this duration. If the value is zero, then the pool does not close connections based on age.
+  #       maxConnectionAge: 0s
+  #     fifocache:
+  #       # queryRange.resultsCache.cache.fifocache.maxSizeBytes -- Maximum memory size of the cache in bytes. A unit suffix (KB, MB, GB) may be applied.
+  #       maxSizeBytes: ""
+  #       # queryRange.resultsCache.cache.fifocache.maxSizeBytes -- Maximum number of entries in the cache.
+  #       maxSizeItems: 0
+  #       # queryRange.resultsCache.cache.fifocache.validity -- The expiry duration for the cache.
+  #       validity: 0s
+
+# ruler -- configures the Loki ruler.
+ruler: {}
+  # # ruler.externalUrl -- URL of alerts return path.
+  # externalUrl: ""
+  # rulerClient:
+  #   # ruler.rulerClient.tlsCertPath -- Path to the client certificate file, which will be used for authenticating with the server. Also requires the key path to be configured.
+  #   tlsCertPath: ""
+  #   # ruler.rulerClient.tlsKeyPath -- Path to the key file for the client certificate. Also requires the client certificate to be configured.
+  #   tlsKeyPath: ""
+  #   # ruler.rulerClient.tlsCaPath -- Path to the CA certificates file to validate server certificate against. If not set, the host's root CA certificates are used.
+  #   tlsCaPath: ""
+  #   # ruler.rulerClient.tlsInsecureSkipVerify -- Skip validating server certificate.
+  #   tlsInsecureSkipVerify: false
+
+  # # ruler.evaluationInterval -- How frequently to evaluate rules
+  # evaluationInterval: 1m
+  # # ruler.pollInterval -- How frequently to poll for rule changes
+  # pollInterval: 1m
+  # storage:
+  #   # ruler.storage.type -- Method to use for backend rule storage (azure, gcs, s3, swift, local)
+  #   type: local
+  #   azure:
+  #     # ruler.storage.azure.environment -- Azure Cloud environment. Supported values are: AzureGlobal,
+  #     # AzureChinaCloud, AzureGermanCloud, AzureUSGovernment.
+  #     environment: AzureGlobal
+  #     # ruler.storage.azure.containerName -- Name of the blob container used to store chunks. This container must be
+  #     # created before running cortex.
+  #     containerName: cortex
+  #     # ruler.storage.azure.environment -- The Microsoft Azure account name to be used
+  #     accountName: ""
+  #     # ruler.storage.azure.accountKey -- The Microsoft Azure account key to use.
+  #     accountKey: ""
+  #     # ruler.storage.azure.downloadBufferSize -- Preallocated buffer size for downloads.
+  #     downloadBufferSize: 512000
+  #     # ruler.storage.azure.uploadBufferSize -- Preallocated buffer size for uploads.
+  #     uploadBufferSize: 256000
+  #     # ruler.storage.azure.uploadBufferCount -- Number of buffers used to used to upload a chunk.
+  #     uploadBufferCount: 1
+  #     # ruler.storage.azure.requestTimeout -- Timeout for requests made against azure blob storage.
+  #     requestTimeout: 30s
+  #     # ruler.storage.azure.maxRetries -- Number of retries for a request which times out.
+  #     maxRetries: 5
+  #     # ruler.storage.azure.minRetryDelay -- Minimum time to wait before retrying a request.
+  #     minRetryDelay: 10ms
+  #     # ruler.storage.azure.maxRetryDelay -- Maximum time to wait before retrying a request.
+  #     maxRetryDelay: 500ms
+  #   gcs:
+  #     # ruler.storage.gcs.bucketName -- Name of GCS bucket to put chunks in.
+  #     bucketName: ""
+  #     # ruler.storage.gcs.chunkBufferSize -- The size of the buffer that GCS client for each PUT request. 0 to disable buffering.
+  #     chunkBufferSize: 0
+  #     # ruler.storage.gcs.requestTimeout -- The duration after which the requests to GCS should be timed out.
+  #     requestTimeout: 0s
+  #   s3:
+  #     # ruler.storage.s3.s3 -- S3 endpoint URL with escaped Key and Secret encoded. If only region is specified as a host, proper endpoint will be deduced.
+  #     # Use inmemory:///<bucket-name> to use a mock in-memory implementation.
+  #     s3: ""
+  #     # ruler.storage.s3.s3forcepathstyle -- Set this to `true` to force the request to use path-style addressing.
+  #     s3forcepathstyle: false
+  #     # ruler.storage.s3.bucketnames -- Comma separated list of bucket names to evenly distribute chunks over. Overrides any buckets specified in s3.url flag
+  #     bucketnames: ""
+  #     # ruler.storage.s3.endpoint -- S3 Endpoint to connect to.
+  #     endpoint: ""
+  #     # ruler.storage.s3.region -- AWS region to use.
+  #     region: ""
+  #     # ruler.storage.s3.accessKeyId -- AWS Access Key ID
+  #     accessKeyId: ""
+  #     # ruler.storage.s3.secretAccessKey -- AWS Secret Access Key
+  #     secretAccessKey: ""
+  #     # ruler.storage.s3.insecure -- Disable https on S3 connection.
+  #     insecure: false
+  #     # ruler.storage.s3.sseEncryption -- Enable AES256 AWS server-side encryption
+  #     sseEncryption: false
+  #     httpConfig:
+  #       # ruler.storage.s3.httpConfig.idleConnTimeout -- The maximum amount of time an idle connection will be held open.
+  #       idleConnTimeout: 1m30s
+  #       # ruler.storage.s3.httpConfig.responseHeaderTimeout -- If non-zero, specifies the amount of time to wait for a server's
+  #       # response headers after fully writing the request.
+  #       responseHeaderTimeout: 0s
+  #       # ruler.storage.s3.httpConfig.insecureSkipVerify -- Set to false to skip verifying the certificate chain and hostname.
+  #       insecureSkipVerify: false
+  #   swift:
+  #     # ruler.storage.swift.authUrl -- Openstack authentication URL.
+  #     authUrl: ""
+  #     # ruler.storage.swift.username -- Openstack username for the api.
+  #     username: ""
+  #     # ruler.storage.swift.userDomainName -- Openstack user's domain name.
+  #     userDomainName: ""
+  #     # ruler.storage.swift.userDomainId -- Openstack user's domain ID.
+  #     userDomainId: ""
+  #     # ruler.storage.swift.userId -- Openstack user ID for the API.
+  #     userId: ""
+  #     # ruler.storage.swift.password -- Openstack API key.
+  #     password: ""
+  #     # ruler.storage.swift.domainId -- Openstack user's domain ID.
+  #     domainId: ""
+  #     # ruler.storage.swift.domainName -- Openstack user's domain name.
+  #     domainName: ""
+  #     # ruler.storage.swift.projectId -- Openstack project ID (v2,v3 auth only).
+  #     projectId: ""
+  #     # ruler.storage.swift.projectName -- Openstack project name (v2,v3 auth only).
+  #     projectName: ""
+  #     # ruler.storage.swift.projectDomainId -- ID of the project's domain (v3 auth only), only needed if it differs the from user domain.
+  #     projectDomainId: ""
+  #     # ruler.storage.swift.projectDomainName -- Name of the project's domain (v3 auth only), only needed if it differs from the user domain.
+  #     projectDomainName: ""
+  #     # ruler.storage.swift.regionName -- Openstack Region to use eg LON, ORD - default is use first region (v2,v3
+  #     # auth only)
+  #     regionName: ""
+  #     # ruler.storage.swift.containerName -- Name of the Swift container to put chunks in.
+  #     containerName: cortex
+  #   local:
+  #     # ruler.storage.local.directory -- Directory to scan for rules
+  #     directory: ""
+
+  # # ruler.rulePath -- File path to store temporary rule files
+  # rulePath: /rules
+
+  # # ruler.alertmanagerUrl -- Comma-separated list of Alertmanager URLs to send notifications to.
+  # # Each Alertmanager URL is treated as a separate group in the configuration.
+  # # Multiple Alertmanagers in HA per group can be supported by using DNS
+  # # resolution via ruler.enableAlertmanagerDiscovery.
+  # alertmanagerUrl: ""
+  # # ruler.enableAlertmanagerDiscovery -- Use DNS SRV records to discover Alertmanager hosts.
+  # enableAlertmanagerDiscovery: false
+  # # ruler.alertmanagerRefreshInterval -- How long to wait between refreshing DNS resolutions of Alertmanager hosts.
+  # alertmanagerRefreshInterval: 1m
+  # # ruler.enableAlertmanagerV2 -- If enabled, then requests to Alertmanager use the v2 API.
+  # enableAlertmanagerV2: false
+  # # ruler.notificationQueueCapacity -- Capacity of the queue for notifications to be sent to the Alertmanager.
+  # notificationQueueCapacity: 10000
+  # # ruler.notificationTimeout -- HTTP timeout duration when sending notifications to the Alertmanager.
+  # notificationTimeout: 10s
+  # # ruler.forOutageTolerance -- Max time to tolerate outage for restoring "for" state of alert.
+  # forOutageTolerance: 1h
+  # # ruler.forGracePeriod -- Minimum duration between alert and restored "for" state. This is maintained only for alerts with configured "for" time greater than the grace period.
+  # forGracePeriod: 10m
+  # # ruler.resendDelay -- Minimum amount of time to wait before resending an alert to Alertmanager.
+  # resendDelay: 1m
+  # # ruler.enableSharding -- Distribute rule evaluation using ring backend.
+  # enableSharding: false
+  # # ruler.searchPendingFor -- Time to spend searching for a pending ruler when shutting down.
+  # searchPendingFor: 5m
+  # ring:
+  #   kvstore:
+  #     # ruler.ring.kvstore.store -- Backend storage to use for the ring. Supported values are: consul, etcd, inmemory, memberlist, multi.
+  #     store: inmemory
+  #     # ruler.ring.kvstore.prefix -- The prefix for the keys in the store. Should end with a /.
+  #     prefix: rulers/
+
+  #     # ruler.ring.kvstore.consul -- Configuration for a Consul client. Only applies if store is "consul"
+  #     consul:
+  #       # ruler.ring.kvstore.consul.host -- The hostname and port of Consul.
+  #       host: localhost:8500
+  #       # ruler.ring.kvstore.consul.aclToken -- The ACL Token used to interact with Consul.
+  #       aclToken: ""
+  #       # ruler.ring.kvstore.consul.httpClientTimeout -- The HTTP timeout when communicating with Consul
+  #       httpClientTimeout: 20s
+  #       # ruler.ring.kvstore.consul.consistentReads -- Whether or not consistent reads to Consul are enabled.
+  #       consistentReads: true
+
+  #     # ruler.ring.kvstore.etcd -- Configuration for an ETCD v3 client. Only applies if store is "etcd"
+  #     etcd:
+  #       # ruler.ring.kvstore.etcd.endpoints -- The etcd endpoints to connect to.
+  #       endpoints: []
+  #       # ruler.ring.kvstore.etcd.dialTimeout -- The dial timeout for the etcd connection.
+  #       dialTimeout: 10s
+  #       # ruler.ring.kvstore.etcd.maxRetries -- The maximum number of retries to do for failed ops.
+  #       maxRetries: 10
+
+  #     # ruler.ring.kvstore.memberlist -- Configuration for Gossip memberlist. Only applies if store is "memberlist"
+  #     memberlist:
+  #       # ruler.ring.kvstore.memberlist.nodeName -- Name of the node in memberlist cluster. Defaults to hostname.
+  #       nodeName: ""
+  #       # ruler.ring.kvstore.memberlist.randomizeNodeName -- Add random suffix to the node name.
+  #       randomizeNodeName: true
+  #       # ruler.ring.kvstore.memberlist.streamTimeout -- The timeout for establishing a connection with a remote node, and for read/write operations. Uses memberlist LAN defaults if 0.
+  #       streamTimeout: 0s
+  #       # ruler.ring.kvstore.memberlist.retransmitFactor -- Multiplication factor used when sending out messages (factor * log(N+1)).
+  #       retransmitFactor: 0
+  #       # ruler.ring.kvstore.memberlist.pullPushInterval -- How often to use pull/push sync. Uses memberlist LAN defaults if 0.
+  #       pullPushInterval: 0s
+  #       # ruler.ring.kvstore.memberlist.gossipInterval -- How often to gossip. Uses memberlist LAN defaults if 0.
+  #       gossipInterval: 0s
+  #       # ruler.ring.kvstore.memberlist.gossipNodes -- How many nodes to gossip to. Uses memberlist LAN defaults if 0.
+  #       gossipNodes: 0
+  #       # ruler.ring.kvstore.memberlist.gossipToDeadNodesTime -- How long to keep gossiping to dead nodes, to give them chance to refute their death. Uses memberlist LAN defaults if 0.
+  #       gossipToDeadNodesTime: 0s
+  #       # ruler.ring.kvstore.memberlist.deadNodeReclaimTime -- How soon can dead node's name be reclaimed with new address. Defaults to 0, which is disabled.
+  #       deadNodeReclaimTime: 0s
+  #       # ruler.ring.kvstore.memberlist.joinMembers -- Other cluster members to join. Can be specified multiple times.
+  #       # It can be an IP, hostname or an entry specified in the DNS Service Discovery format (see https://cortexmetrics.io/docs/configuration/arguments/#dns-service-discovery for more details).
+  #       joinMembers: ""
+  #       # ruler.ring.kvstore.memberlist.minJoinBackoff -- Min backoff duration to join other cluster members.
+  #       minJoinBackoff: 1s
+  #       # ruler.ring.kvstore.memberlist.maxJoinBackoff -- Max backoff duration to join other cluster members.
+  #       maxJoinBackoff: 1m
+  #       # ruler.ring.kvstore.memberlist.maxJoinRetries -- Max number of retries to join other cluster members.
+  #       maxJoinRetries: 10
+  #       # ruler.ring.kvstore.memberlist.abortIfClusterJoinFails -- If this node fails to join memberlist cluster, abort.
+  #       abortIfClusterJoinFails: true
+  #       # ruler.ring.kvstore.memberlist.rejoinInterval -- If not 0, how often to rejoin the cluster. Occasional rejoin can help to fix the cluster split issue, and is harmless otherwise.
+  #       # For example when using only few components as a seed nodes (via -memberlist.join), then it's recommended to use rejoin.
+  #       # If -memberlist.join points to dynamic service that resolves to all gossiping nodes (eg. Kubernetes headless service), then rejoin is not needed.
+  #       rejoinInterval: 0s
+  #       # ruler.ring.kvstore.memberlist.leftIngestersTimeout -- How long to keep LEFT ingesters in the ring.
+  #       leftIngestersTimeout: 5m
+  #       # ruler.ring.kvstore.memberlist.leaveTimeout -- Timeout for leaving memberlist cluster.
+  #       leaveTimeout: 5s
+  #       # ruler.ring.kvstore.memberlist.bindAddr -- IP address to listen on for gossip messages. Multiple addresses may be specified.
+  #       bindAddr: 0.0.0.0
+  #       # ruler.ring.kvstore.memberlist.bindPort -- Port to listen on for gossip messages.
+  #       bindPort: 7946
+  #       # ruler.ring.kvstore.memberlist.packetDialTimeout -- Timeout used when connecting to other nodes to send packet.
+  #       packetDialTimeout: 5s
+  #       # ruler.ring.kvstore.memberlist.packetWriteTimeout -- Timeout for writing 'packet' data.
+  #       packetWriteTimeout: 5s
+
+  #     multi:
+  #       # ruler.ring.kvstore.store.multi.primary -- Primary backend storage used by multi-client.
+  #       primary: ""
+  #       # ruler.ring.kvstore.store.multi.secondary -- Secondary backend storage used by multi-client.
+  #       secondary: ""
+  #       # ruler.ring.kvstore.store.multi.mirrorEnabled -- Mirror writes to secondary store.
+  #       mirrorEnabled: false
+  #       # ruler.ring.kvstore.store.multi.mirrorTimeout -- Timeout for storing value to secondary store.
+  #       mirrorTimeout: 2s
+  #   # ruler.ring.heartbeatPeriod -- Period at which to heartbeat to the ring.
+  #   heartbeatPeriod: 5s
+  #   # ruler.ring.heartbeatTimeout -- The heartbeat timeout after which rulers are considered unhealthy within the ring.
+  #   heartbeatTimeout: 1m
+  #   # ruler.ring.numTokens -- Number of tokens for each ingester.
+  #   numTokens: 128
+  # # ruler.flushPeriod -- Period with which to attempt to flush rule groups.
+  # flushPeriod: 1m
+  # # ruler.enableApi -- Enable the Ruler API.
+  # enableApi: false
+
+# ingesterClient -- Configures how the distributor will connect to ingesters. Only appropriate when running all modules, the distributor, or the querier.
+ingesterClient: {}
+  # # ingesterClient.poolConfig -- Configures how connections are pooled
+  # poolConfig:
+  #   # ingesterClient.poolConfig.healthCheckIngesters -- Whether or not to do health checks.
+  #   healthCheckIngesters: false
+  #   # ingesterClient.poolConfig.healthCheckIngesters -- How frequently to clean up clients for servers that have gone away after a health check.
+  #   clientCleanupPeriod: 15s
+  # # ingesterClient.remoteTimeout -- The remote request timeout on the client side.
+  # remoteTimeout: 5s
+  # # ingesterClient.grpcClientConfig -- Configures how the gRPC connection to ingesters work as a client
+  # grpcClientConfig:
+  #   # ingesterClient.grpcClientConfig.maxRecvMsgSize -- The maximum size in bytes the client can receive.
+  #   # CLI flag: -<prefix>.grpc-max-recv-msg-size
+  #   maxRecvMsgSize: 104857600
+  #   # ingesterClient.grpcClientConfig.maxSendMsgSize -- The maximum size in bytes the client can send.
+  #   maxSendMsgSize: 16777216
+  #   # ingesterClient.grpcClientConfig.grpcCompression -- Use compression when sending messages. Supported values are: 'gzip', 'snappy' and '' (disable compression).
+  #   grpcCompression: false
+  #   # ingesterClient.grpcClientConfig.rateLimit -- Rate limit for gRPC client. 0 is disabled.
+  #   rateLimit: 0
+  #   # ingesterClient.grpcClientConfig.rateLimitBurst -- Rate limit burst for gRPC client.
+  #   rateLimitBurst: 0
+  #   # ingesterClient.grpcClientConfig.maxRecvMsgSize -- Enable backoff and retry when a rate limit is hit.
+  #   backoffOnRatelimits: false
+  #   # ingesterClient.grpcClientConfig.backoffConfig -- Configures backoff when enabled.
+  #   backoffConfig:
+  #     # ingesterClient.grpcClientConfig.backoffConfig.minPeriod -- Minimum delay when backing off.
+  #     minPeriod: 100ms
+  #     # ingesterClient.grpcClientConfig.backoffConfig.maxPeriod -- The maximum delay when backing off.
+  #     maxPeriod: 10s
+  #     # ingesterClient.grpcClientConfig.backoffConfig.maxRetries -- Number of times to backoff and retry before failing.
+  #     maxRetries: 10
+
+# ingester -- Configures the ingester and how the ingester will register itself to a key value store.
+ingester:
+  # ingester.maxTransferRetries -- Number of times to try and transfer chunks when leaving before
+  # falling back to flushing to the store. Zero = no transfers are done.
+  maxTransferRetries: 10
+  # ingester.concurrentFlushes -- How many flushes can happen concurrently from each stream.
+  concurrentFlushes: 16
+  # ingester.flushCheckPeriod -- How often should the ingester see if there are any blocks to flush
+  flushCheckPeriod: 30s
+  # ingester.flushOpTimeout -- The timeout before a flush is cancelled
+  flushOpTimeout: 10s
+  # ingester.chunkRetainPeriod -- How long chunks should be retained in-memory after they've been flushed.
+  chunkRetainPeriod: 15m
+  # ingester.chunkIdlePeriod -- How long chunks should sit in-memory with no updates before being flushed if they don't hit the max block size.
+  # This means that half-empty chunks will still be flushed after a certain period as long as they receive no further activity.
+  chunkIdlePeriod: 30m
+  # ingester.chunkBlockSize -- The targeted uncompressed size in bytes of a chunk block. When this threshold is exceeded the head block will be cut and compressed inside the chunk.
+  chunkBlockSize: 262144
+  # ingester.chunkTargetSize -- A target compressed size in bytes for chunks.
+  # This is a desired size not an exact size, chunks may be slightly bigger or significantly smaller if they get flushed for other reasons (e.g. chunkIdlePeriod).
+  # The default value of 0 for this will create chunks with a fixed 10 blocks, a non zero value will create chunks with a variable number of blocks to meet the target size.
+  chunkTargetSize: 1536000
+  # ingester.chunkEncoding -- The compression algorithm to use for chunks. (supported: gzip, lz4, snappy)
+  # You should choose your algorithm depending on your need:
+  # - `gzip` highest compression ratio but also slowest decompression speed. (144 kB per chunk)
+  # - `lz4` fastest compression speed (188 kB per chunk)
+  # - `snappy` fast and popular compression algorithm (272 kB per chunk)
+  chunkEncoding: gzip
+  # ingester.syncPeriod -- Parameters used to synchronize ingesters to cut chunks at the same moment.
+  # Sync period is used to roll over incoming entry to a new chunk. If chunk's utilization isn't high enough (eg. less than 50% when syncMinUtilization is set to 0.5), then this chunk rollover doesn't happen.
+  syncPeriod: 0s
+  syncMinUtilization: 0
+  # ingester.maxReturnedStreamErrors -- The maximum number of errors a stream will report to the user when a push fails. 0 to make unlimited.
+  maxReturnedStreamErrors: 10
+  # ingester.maxChunkAge -- The maximum duration of a timeseries chunk in memory. If a timeseries runs for longer than this the current chunk will be flushed to the store and a new chunk created.
+  maxChunkAge: 1h
+  # ingester.queryStoreMaxLookBackPeriod -- How far in the past an ingester is allowed to query the store for data.
+  # This is only useful for running multiple loki binaries with a shared ring with a `filesystem` store which is NOT shared between the binaries
+  # When using any "shared" object store like S3 or GCS this value must always be left as 0
+  # It is an error to configure this to a non-zero value when using any object store other than `filesystem`
+  # Use a value of -1 to allow the ingester to query the store infinitely far back in time.
+  queryStoreMaxLookBackPeriod: 0s
+  lifecycler:
+    # ingester.lifecycler.numTokens -- The number of tokens the lifecycler will generate and put into the ring if it joined without transferring tokens from another lifecycler.
+    numTokens: 128
+    # ingester.lifecycler.heartbeatPeriod -- Period at which to heartbeat to the underlying ring.
+    heartbeatPeriod: 5s
+    # ingester.lifecycler.joinAfter -- How long to wait to claim tokens and chunks from another member when that member is leaving. Will join automatically after the duration expires.
+    joinAfter: 0s
+    # ingester.lifecycler.numTokens -- Minimum duration to wait before becoming ready. This is to work around race conditions with ingesters exiting and updating the ring.
+    minReadyDuration: 1m
+    # ingester.lifecycler.interfaceNames -- Name of network interfaces to read addresses from.
+    interfaceNames: []
+      # - en0
+      # - eth0
+      # - eth1
+    # ingester.lifecycler.finalSleep -- Duration to sleep before exiting to ensure metrics are scraped.
+    finalSleep: 30s
+    ring:
+      # ingester.lifecycler.ring.heartbeatTimeout -- The heartbeat timeout after which ingesters are skipped for reads/writes.
+      heartbeatTimeout: 1m
+      # ingester.lifecycler.ring.replicationFactor -- The heartbeat timeout after which ingesters are skipped for reads/writes.
+      replicationFactor: 1
+      kvstore:
+        # ingester.lifecycler.ring.kvstore.store -- Backend storage to use for the ring. Supported values are: consul, etcd, inmemory, memberlist
+        store: inmemory
+        # ingester.lifecycler.ring.kvstore.prefix -- The prefix for the keys in the store. Should end with a /.
+        prefix: collectors/
+        # ingester.lifecycler.ring.kvstore.consul -- Configuration for a Consul client. Only applies if store is "consul"
+        consul:
+          # ingester.lifecycler.ring.kvstore.consul.host -- The hostname and port of Consul.
+          host: localhost:8500
+          # ingester.lifecycler.ring.kvstore.consul.aclToken -- The ACL Token used to interact with Consul.
+          aclToken: ""
+          # ingester.lifecycler.ring.kvstore.consul.httpClientTimeout -- The HTTP timeout when communicating with Consul
+          httpClientTimeout: 20s
+          # ingester.lifecycler.ring.kvstore.consul.consistentReads -- Whether or not consistent reads to Consul are enabled.
+          consistentReads: true
+
+        # ingester.lifecycler.ring.kvstore.etcd -- Configuration for an ETCD v3 client. Only applies if store is "etcd"
+        etcd:
+          # ingester.lifecycler.ring.kvstore.etcd.endpoints -- The etcd endpoints to connect to.
+          endpoints: []
+          # ingester.lifecycler.ring.kvstore.etcd.dialTimeout -- The dial timeout for the etcd connection.
+          dialTimeout: 10s
+          # ingester.lifecycler.ring.kvstore.etcd.maxRetries -- The maximum number of retries to do for failed ops.
+          maxRetries: 10
+
+        # ingester.lifecycler.ring.kvstore.memberlist -- Configuration for Gossip memberlist. Only applies if store is "memberlist"
+        memberlist:
+          # ingester.lifecycler.ring.kvstore.memberlist.nodeName -- Name of the node in memberlist cluster. Defaults to hostname.
+          nodeName: ""
+          # ingester.lifecycler.ring.kvstore.memberlist.randomizeNodeName -- Add random suffix to the node name.
+          randomizeNodeName: true
+          # ingester.lifecycler.ring.kvstore.memberlist.streamTimeout -- The timeout for establishing a connection with a remote node, and for read/write operations. Uses memberlist LAN defaults if 0.
+          streamTimeout: 0s
+          # ingester.lifecycler.ring.kvstore.memberlist.retransmitFactor -- Multiplication factor used when sending out messages (factor * log(N+1)).
+          retransmitFactor: 0
+          # ingester.lifecycler.ring.kvstore.memberlist.pullPushInterval -- How often to use pull/push sync. Uses memberlist LAN defaults if 0.
+          pullPushInterval: 0s
+          # ingester.lifecycler.ring.kvstore.memberlist.gossipInterval -- How often to gossip. Uses memberlist LAN defaults if 0.
+          gossipInterval: 0s
+          # ingester.lifecycler.ring.kvstore.memberlist.gossipNodes -- How many nodes to gossip to. Uses memberlist LAN defaults if 0.
+          gossipNodes: 0
+          # ingester.lifecycler.ring.kvstore.memberlist.gossipToDeadNodesTime -- How long to keep gossiping to dead nodes, to give them chance to refute their death. Uses memberlist LAN defaults if 0.
+          gossipToDeadNodesTime: 0s
+          # ingester.lifecycler.ring.kvstore.memberlist.deadNodeReclaimTime -- How soon can dead node's name be reclaimed with new address. Defaults to 0, which is disabled.
+          deadNodeReclaimTime: 0s
+          # ingester.lifecycler.ring.kvstore.memberlist.joinMembers -- Other cluster members to join. Can be specified multiple times.
+          # It can be an IP, hostname or an entry specified in the DNS Service Discovery format (see https://cortexmetrics.io/docs/configuration/arguments/#dns-service-discovery for more details).
+          joinMembers: ""
+          # ingester.lifecycler.ring.kvstore.memberlist.minJoinBackoff -- Min backoff duration to join other cluster members.
+          minJoinBackoff: 1s
+          # ingester.lifecycler.ring.kvstore.memberlist.maxJoinBackoff -- Max backoff duration to join other cluster members.
+          maxJoinBackoff: 1m
+          # ingester.lifecycler.ring.kvstore.memberlist.maxJoinRetries -- Max number of retries to join other cluster members.
+          maxJoinRetries: 10
+          # ingester.lifecycler.ring.kvstore.memberlist.abortIfClusterJoinFails -- If this node fails to join memberlist cluster, abort.
+          abortIfClusterJoinFails: true
+          # ingester.lifecycler.ring.kvstore.memberlist.rejoinInterval -- If not 0, how often to rejoin the cluster. Occasional rejoin can help to fix the cluster split issue, and is harmless otherwise.
+          # For example when using only few components as a seed nodes (via -memberlist.join), then it's recommended to use rejoin.
+          # If -memberlist.join points to dynamic service that resolves to all gossiping nodes (eg. Kubernetes headless service), then rejoin is not needed.
+          rejoinInterval: 0s
+          # ingester.lifecycler.ring.kvstore.memberlist.leftIngestersTimeout -- How long to keep LEFT ingesters in the ring.
+          leftIngestersTimeout: 5m
+          # ingester.lifecycler.ring.kvstore.memberlist.leaveTimeout -- Timeout for leaving memberlist cluster.
+          leaveTimeout: 5s
+          # ruler.ring.kvstore.memberlist.bindAddr -- IP address to listen on for gossip messages. Multiple addresses may be specified.
+          bindAddr: 0.0.0.0
+          # ingester.lifecycler.ring.kvstore.memberlist.bindPort -- Port to listen on for gossip messages.
+          bindPort: 7946
+          # ingester.lifecycler.ring.kvstore.memberlist.packetDialTimeout -- Timeout used when connecting to other nodes to send packet.
+          packetDialTimeout: 5s
+          # ingester.lifecycler.ring.kvstore.memberlist.packetWriteTimeout -- Timeout for writing 'packet' data.
+          packetWriteTimeout: 5s
+
+# limitsConfig -- Configures limits per-tenant or globally
+limitsConfig:
+  # limitsConfig.ingestionRateStrategy -- Whether the ingestion rate limit should be applied individually to each
+  # distributor instance (local), or evenly shared across the cluster (global).
+  # The ingestion rate strategy cannot be overridden on a per-tenant basis.
+  #
+  # - local: enforces the limit on a per distributor basis. The actual effective
+  #   rate limit will be N times higher, where N is the number of distributor
+  #   replicas.
+  # - global: enforces the limit globally, configuring a per-distributor local
+  #   rate limiter as "ingestion_rate / N", where N is the number of distributor
+  #   replicas (it's automatically adjusted if the number of replicas change).
+  #   The global strategy requires the distributors to form their own ring, which
+  #   is used to keep track of the current number of healthy distributor replicas.
+  ingestionRateStrategy: local
+  # limitsConfig.ingestionRateMb -- Per-user ingestion rate limit in sample size per second. Units in MB.
+  ingestionRateMb: 4.0
+  # limitsConfig.ingestionBurstSizeMb -- Per-user allowed ingestion burst size (in sample size). Units in MB.
+  # The burst size refers to the per-distributor local rate limiter even in the
+  # case of the "global" strategy, and should be set at least to the maximum logs
+  # size expected in a single push request.
+  ingestionBurstSizeMb: 6
+  # limitsConfig.maxLabelNameLength -- Maximum length of a label name.
+  maxLabelNameLength: 1024
+  # limitsConfig.maxLabelValueLength -- Maximum length of a label value.
+  maxLabelValueLength: 2048
+  # limitsConfig.maxLabelNamesPerSeries -- Maximum number of label names per series.
+  maxLabelNamesPerSeries: 30
+  # limitsConfig.rejectOldSamples -- Whether or not old samples will be rejected.
+  rejectOldSamples: true
+  # limitsConfig.rejectOldSamplesMaxAge -- Maximum accepted sample age before rejecting.
+  rejectOldSamplesMaxAge: 336h
+  # limitsConfig.creationGracePeriod -- Duration for a table to be created/deleted before/after it's needed. Samples won't be accepted before this time.
+  creationGracePeriod: 10m
+  # limitsConfig.enforceMetricName -- Enforce every sample has a metric name.
+  enforceMetricName: false
+  # limitsConfig.maxStreamsPerUser -- Maximum number of active streams per user, per ingester. 0 to disable.
+  maxStreamsPerUser: 10000
+  # -- (str) Maximum line size on ingestion path. Example: 256kb. There is no limit when unset.
+  maxLineSize:
+  # limitsConfig.maxEntriesLimitPerQuery -- Maximum number of log entries that will be returned for a query.
+  maxEntriesLimitPerQuery: 5000
+  # limitsConfig.maxGlobalStreamsPerUser -- Maximum number of active streams per user, across the cluster. 0 to disable.
+  # When the global limit is enabled, each ingester is configured with a dynamic local limit based on the replication factor and the current number of healthy ingesters,
+  # and is kept updated whenever the number of ingesters change.
+  maxGlobalStreamsPerUser: 0
+  # limitsConfig.maxChunksPerQuery -- Maximum number of chunks that can be fetched by a single query.
+  maxChunksPerQuery: 2000000
+  # limitsConfig.maxQueryLength -- The limit to length of chunk store queries. 0 to disable.
+  maxQueryLength: 0s
+  # limitsConfig.maxQueryParallelism -- Maximum number of queries that will be scheduled in parallel by the frontend.
+  maxQueryParallelism: 14
+  # limitsConfig.cardinalityLimit -- Cardinality limit for index queries.
+  cardinalityLimit: 100000
+  # limitsConfig.maxStreamsMatchersPerQuery -- Maximum number of stream matchers per query.
+  maxStreamsMatchersPerQuery: 1000
+  # limitsConfig.perTenantOverrideConfig -- Feature renamed to 'runtime configuration', flag deprecated in favor of -runtime-config.file (runtime_config.file in YAML).
+  perTenantOverrideConfig: ""
+  # limitsConfig.perTenantOverridePeriod -- Feature renamed to 'runtime configuration', flag deprecated in favor of -runtime-config.reload-period (runtime_config.period in YAML).
+  perTenantOverridePeriod: 10s
+
+schemaConfig:
+  configs:
+      # -- The date of the first day that index buckets should be created.
+      # Use a date in the past if this is your only period_config, otherwise use a date when you want the schema to switch over.
+      # In YYYY-MM-DD format, for example: 2018-04-15.
+    - from: 2022-10-06
+      # -- Which store to use for the index. Either aws, aws-dynamo, gcp, bigtable, bigtable-hashed, cassandra, boltdb-shipper or boltdb.
+      store: boltdb
+      # -- Which store to use for the chunks. Either aws, azure, gcp, bigtable, gcs, cassandra, swift or filesystem. If omitted, defaults to the same value as store.
+      objectStore: filesystem
+      # -- The schema version to use, current recommended schema is v11.
+      schema: v11
+      # Configures how the index is updated and stored.
+      index:
+        # -- Table prefix for all period tables.
+        prefix: index_
+        # -- Table period.
+        period: 24h
+        # -- A map to be added to all managed tables.
+        tags: {}
+      # Configured how the chunks are updated and stored.
+      chunks:
+        # -- Table prefix for all period tables.
+        prefix: ""
+        # -- Table period.
+        period: 168h
+        # -- A map to be added to all managed tables.
+        tags: {}
+      # -- How many shards will be created. Only used if schema is v10 or greater.
+      rowShards: 16
+
+# Configures where Loki will store data.
+storageConfig:
+  # storageConfig.boltdb -- Configures storing index in BoltDB. Required fields only required when boltdb is present in config.
+  boltdb:
+    # storageConfig.boltdb.directory -- Location of BoltDB index files.
+    directory: /data/loki/index
+  boltdbShipper: {}
+    #
+    # storageConfig.boltdbShipper.activeIndexDirectory -- Directory where ingesters would write boltdb files which would then be uploaded by shipper to configured storage
+    # activeIndexDirectory: /data/loki/index
+    #
+    # storageConfig.boltdbShipper.sharedStore -- Shared store for keeping boltdb files. Supported types: gcs, s3, azure, filesystem
+    # sharedStore: gcs
+    #
+    # storageConfig.boltdbShipper.cacheLocation -- Cache location for restoring boltDB files for queries
+    # cacheLocation: /data/loki/boltdb-cache
+    #
+    # storageConfig.boltdbShipper.cacheTtl -- Cache location for restoring boltDB files for queries
+    # cacheTtl: 24h
+    #
+    # storageConfig.boltdbShipper.resyncInterval -- Resync downloaded files with the storage
+    # resyncInterval: 5m
+    #
+    # storageConfig.boltdbShipper.queryReadyNumDays -- Number of days of index to be kept downloaded for queries. Works only with tables created with 24h period.
+    # queryReadyNumDays: 0
+    #
+  # storageConfig.filesystem -- Configures storing the chunks on the local filesystem. Required fields only required when filesystem is present in config.
+  filesystem:
+    # storageConfig.filesystem.directory -- Directory to store chunks in.
+    directory: /data/loki/chunks
+  # storageConfig.indexCacheValidity -- Cache validity for active index entries. Should be no higher than the chunk_idle_period in the ingester settings.
+  indexCacheValidity: 5m
+  # storageConfig.maxChunkBatchSize -- The maximum number of chunks to fetch per batch.
+  maxChunkBatchSize: 50
+  # storageConfig.aws -- Configures storing chunks in AWS. Required options only required when aws is present.
+  aws:
+    # storageConfig.aws.s3 -- S3 or S3-compatible endpoint URL with escaped Key and Secret encoded.
+    # If only region is specified as a host, the proper endpoint will be deduced.
+    # Use inmemory:///<bucket-name> to use a mock in-memory implementation.
+    s3: ""
+    # storageConfig.aws.s3forcepathstyle -- Set to true to force the request to use path-style addressing
+    s3forcepathstyle: false
+    # storageConfig.aws.bucketnames -- Comma separated list of bucket names to evenly distribute chunks over.
+    # Overrides any buckets specified in s3.url flag
+    bucketnames: ""
+    # storageConfig.aws.endpoint -- S3 Endpoint to connect to.
+    endpoint: ""
+    # storageConfig.aws.region -- AWS region to use.
+    region: ""
+    # storageConfig.aws.accessKeyId -- AWS Access Key ID.
+    accessKeyId: ""
+    # storageConfig.aws.secretAccessKey -- AWS Secret Access Key.
+    secretAccessKey: ""
+    # storageConfig.aws.insecure -- Disable https on S3 connection.
+    insecure: false
+    # storageConfig.aws.sseEncryption -- Enable AES256 AWS Server Side Encryption.
+    sseEncryption: false
+    httpConfig:
+      # storageConfig.aws.httpConfig.idleConnTimeout -- The maximum amount of time an idle connection will be held open.
+      idleConnTimeout: 1m30s
+      # storageConfig.aws.httpConfig.responseHeaderTimeout -- If non-zero, specifies the amount of time to wait for a server's response headers after fully writing the request.
+      responseHeaderTimeout: 0s
+      # storageConfig.aws.httpConfig.insecureSkipVerify -- Set to false to skip verifying the certificate chain and hostname.
+      insecureSkipVerify: false
+
+    # storageConfig.aws.dynamodb -- Configure the DynamoDB connection
+    dynamodb:
+      # storageConfig.aws.dynamodb.dynamodbUrl -- URL for DynamoDB with escaped Key and Secret encoded. If only region is specified as a
+      # host, the proper endpoint will be deduced. Use inmemory:///<bucket-name> to
+      # use a mock in-memory implementation.
+      dynamodbUrl: ""
+      # storageConfig.aws.dynamodb.apiLimit -- DynamoDB table management requests per-second limit.
+      apiLimit: 2.0
+      # storageConfig.aws.dynamodb.throttleLimit -- DynamoDB rate cap to back off when throttled.
+      throttleLimit: 10.0
+      # storageConfig.aws.dynamodb.chunkGangSize -- Number of chunks to group together to parallelise fetches (0 to disable)
+      chunkGangSize: 10
+      # storageConfig.aws.dynamodb.chunkGetMaxParallelism -- Max number of chunk get operations to start in parallel.
+      chunkGetMaxParallelism: 32
+      # storageConfig.aws.dynamodb.metrics -- Metrics-based autoscaling configuration.
+      metrics:
+        # storageConfig.aws.dynamodb.metrics.url -- Use metrics-based autoscaling via this Prometheus query URL.
+        url: ""
+        # storageConfig.aws.dynamodb.metrics.targetQueueLength -- Queue length above which we will scale up capacity.
+        targetQueueLength: 100000
+        # storageConfig.aws.dynamodb.metrics.scaleUpFactor -- Scale up capacity by this multiple
+        scaleUpFactor: 1.3
+        # storageConfig.aws.dynamodb.metrics.ignoreThrottleBelow -- Ignore throttling below this level (rate per second)
+        ignoreThrottleBelow: 1.0
+        # storageConfig.aws.dynamodb.metrics.queueLengthQuery -- Query to fetch ingester queue length
+        queueLengthQuery: sum(avg_over_time(cortex_ingester_flush_queue_length{job="cortex/ingester"}[2m]))
+        # storageConfig.aws.dynamodb.metrics.writeThrottleQuery -- Query to fetch throttle rates per table
+        writeThrottleQuery: sum(rate(cortex_dynamo_throttled_total{operation="DynamoDB.BatchWriteItem"}[1m])) by (table) > 0
+        # storageConfig.aws.dynamodb.metrics.writeUsageQuery -- Query to fetch write capacity usage per table
+        writeUsageQuery: sum(rate(cortex_dynamo_consumed_capacity_total{operation="DynamoDB.BatchWriteItem"}[15m])) by (table) > 0
+        # storageConfig.aws.dynamodb.metrics.readUsageQuery -- Query to fetch read capacity usage per table
+        readUsageQuery: sum(rate(cortex_dynamo_consumed_capacity_total{operation="DynamoDB.QueryPages"}[1h])) by (table) > 0
+        # storageConfig.aws.dynamodb.metrics.readErrorQuery -- Query to fetch read errors per table
+        readErrorQuery: sum(increase(cortex_dynamo_failures_total{operation="DynamoDB.QueryPages",error="ProvisionedThroughputExceededException"}[1m])) by (table) > 0
+
+  # storageConfig.bigtable -- Configures storing chunks in Bigtable. Required fields only required when bigtable is defined in config.
+  bigtable:
+    # storageConfig.bigtable.project -- BigTable project ID
+    project: ""
+    # storageConfig.bigtable.instance -- BigTable instance ID
+    instance: ""
+    # storageConfig.bigtable.grpcClientConfig -- Configures the gRPC client used to connect to Bigtable.
+    grpcClientConfig:
+      # storageConfig.bigtable.grpcClientConfig.maxRecvMsgSize -- The maximum size in bytes the client can receive.
+      maxRecvMsgSize: 104857600
+      # storageConfig.bigtable.grpcClientConfig.maxSendMsgSize -- The maximum size in bytes the client can send.
+      maxSendMsgSize: 16777216
+      # storageConfig.bigtable.grpcClientConfig.grpcCompression -- Use compression when sending messages. Supported values are: 'gzip', 'snappy' and '' (disable compression).
+      grpcCompression: gzip
+      # storageConfig.bigtable.grpcClientConfig.rateLimit -- Rate limit for gRPC client. 0 is disabled.
+      rateLimit: 0
+      # storageConfig.bigtable.grpcClientConfig.rateLimitBurst -- Rate limit burst for gRPC client.
+      rateLimitBurst: 0
+      # storageConfig.bigtable.grpcClientConfig.maxRecvMsgSize -- Enable backoff and retry when a rate limit is hit.
+      backoffOnRatelimits: false
+      # storageConfig.bigtable.grpcClientConfig.backoffConfig -- Configures backoff when enabled.
+      backoffConfig:
+        # storageConfig.bigtable.grpcClientConfig.backoffConfig.minPeriod -- Minimum delay when backing off.
+        minPeriod: 100ms
+        # storageConfig.bigtable.grpcClientConfig.backoffConfig.maxPeriod -- The maximum delay when backing off.
+        maxPeriod: 10s
+        # storageConfig.bigtable.grpcClientConfig.backoffConfig.maxRetries -- Number of times to backoff and retry before failing.
+        maxRetries: 10
+
+  # storageConfig.gcs -- Configures storing index in GCS. Required fields only required when gcs is defined in config.
+  gcs:
+    # storageConfig.gcs.bucketName -- Name of GCS bucket to put chunks in.
+    bucketName: ""
+    # storageConfig.gcs.chunkBufferSize -- The size of the buffer that the GCS client uses for each PUT request. 0 to disable buffering.
+    chunkBufferSize: 0
+    # storageConfig.gcs.requestTimeout -- The duration after which the requests to GCS should be timed out.
+    requestTimeout: 0s
+
+  # storageConfig.cassandra -- Configures storing chunks and/or the index in Cassandra
+  cassandra:
+    # storageConfig.cassandra.addresses -- Comma-separated hostnames or IPs of Cassandra instances
+    addresses: ""
+    # storageConfig.cassandra.port -- Port that cassandra is running on
+    port: 9042
+    # storageConfig.cassandra.keyspace -- Keyspace to use in Cassandra
+    keyspace: ""
+    # storageConfig.cassandra.consistency -- Consistency level for Cassandra
+    consistency: QUORUM
+    # storageConfig.cassandra.replicationFactor -- Replication factor to use in Cassandra.
+    replicationFactor: 1
+    # storageConfig.cassandra.disableInitialHostLookup -- Instruct the Cassandra driver to not attempt to get host info from the system.peers table.
+    disableInitialHostLookup: false
+    # storageConfig.cassandra.ssl -- Use SSL when connecting to Cassandra instances.
+    ssl: false
+    # storageConfig.cassandra.hostVerification -- Require SSL certificate validation when SSL is enabled.
+    hostVerification: true
+    # storageConfig.cassandra.caPath -- Path to certificate file to verify the peer when SSL is enabled.
+    caPath: ""
+    # storageConfig.cassandra.auth -- Enable password authentication when connecting to Cassandra.
+    auth: false
+    # storageConfig.cassandra.username -- Username for password authentication when auth is true.
+    username: ""
+    # storageConfig.cassandra.password -- Password for password authentication when auth is true.
+    password: ""
+    # storageConfig.cassandra.timeout -- Timeout when connecting to Cassandra.
+    timeout: 600ms
+    # storageConfig.cassandra.connectTimeout -- Initial connection timeout during initial dial to server.
+    connectTimeout: 600ms
+
+  swift:
+    # storageConfig.swift.authUrl -- Openstack authentication URL.
+    authUrl: ""
+    # storageConfig.swift.username -- Openstack username for the api.
+    username: ""
+    # storageConfig.swift.userDomainName -- Openstack user's domain name.
+    userDomainName: ""
+    # storageConfig.swift.userDomainId -- Openstack user's domain id.
+    userDomainId: ""
+    # storageConfig.swift.userId -- Openstack userid for the api.
+    userId: ""
+    # storageConfig.swift.password -- Openstack api key.
+    password: ""
+    # storageConfig.swift.domainId -- Openstack user's domain id.
+    domainId: ""
+    # storageConfig.swift.domainName -- Openstack user's domain name.
+    domainName: ""
+    # storageConfig.swift.projectId -- Openstack project id (v2,v3 auth only).
+    projectId: ""
+    # storageConfig.swift.projectName -- Openstack project name (v2,v3 auth only).
+    projectName: ""
+    # storageConfig.swift.projectDomainId -- Id of the project's domain (v3 auth only), only needed if it differs the from user domain.
+    projectDomainId: ""
+    # storageConfig.swift.projectDomainName -- Name of the project's domain (v3 auth only), only needed if it differs from the user domain.
+    projectDomainName: ""
+    # storageConfig.swift.regionName -- Openstack Region to use eg LON, ORD - default is use first region (v2,v3 auth only)
+    regionName: ""
+    # storageConfig.swift.containerName -- Name of the Swift container to put chunks in.
+    containerName: cortex
+
+  # storageConfig.indexQueriesCacheConfig -- Config for how the cache for index queries should be built.
+  indexQueriesCacheConfig:
+    # storageConfig.indexQueriesCacheConfig.enableFifocache -- Enable in-memory cache.
+    enableFifocache: false
+    # storageConfig.indexQueriesCacheConfig.defaultValidity -- The default validity of entries for caches unless overridden.
+    defaultValidity: 1h
+    # storageConfig.indexQueriesCacheConfig.background -- Configures the background cache when memcached is used.
+    background:
+      # storageConfig.indexQueriesCacheConfig.background.writebackGoroutines -- How many goroutines to use to write back to memcached.
+      writebackGoroutines: 10
+      # storageConfig.indexQueriesCacheConfig.background.writebackBuffer -- How many chunks to buffer for background write back to memcached.
+      writebackBuffer: 10000
+    # storageConfig.indexQueriesCacheConfig.memcached -- Configures memcached settings.
+    memcached:
+      # storageConfig.indexQueriesCacheConfig.memcached.expiration -- Configures how long keys stay in memcached.
+      expiration: 1h
+      # storageConfig.indexQueriesCacheConfig.memcached.batchSize -- Configures how many keys to fetch in each batch request.
+      batchSize: 262144
+      # storageConfig.indexQueriesCacheConfig.memcached.parallelism -- Maximum active requests to memcached.
+      parallelism: 100
+    # storageConfig.indexQueriesCacheConfig.memcachedClient -- Configures how to connect to one or more memcached servers.
+    memcachedClient:
+      # storageConfig.indexQueriesCacheConfig.memcachedClient.host -- The hostname to use for memcached services when caching chunks. If empty, no memcached will be used. A SRV lookup will be used.
+      host: ""
+      # storageConfig.indexQueriesCacheConfig.memcachedClient.service -- SRV service used to discover memcached servers.
+      service: memcached
+      # storageConfig.indexQueriesCacheConfig.memcachedClient.timeout -- Maximum time to wait before giving up on memcached requests.
+      timeout: 100ms
+      # storageConfig.indexQueriesCacheConfig.memcachedClient.maxIdleConns -- The maximum number of idle connections in the memcached client pool.
+      maxIdleConns: 100
+      # storageConfig.indexQueriesCacheConfig.memcachedClient.updateInterval -- The period with which to poll the DNS for memcached servers.
+      updateInterval: 1m
+      # storageConfig.indexQueriesCacheConfig.memcachedClient.consistentHash -- Whether or not to use a consistent hash to discover multiple memcached servers.
+      consistentHash: true
+    redis:
+      # storageConfig.indexQueriesCacheConfig.redis.endpoint -- Redis Server endpoint to use for caching. A comma-separated list of endpoints for Redis Cluster or Redis Sentinel. If empty, no redis will be used.
+      endpoint: ""
+      # storageConfig.indexQueriesCacheConfig.redis.masterName -- Redis Sentinel master name. An empty string for Redis Server or Redis Cluster.
+      masterName: ""
+      # storageConfig.indexQueriesCacheConfig.redis.timeout -- Maximum time to wait before giving up on redis requests.
+      timeout: 100ms
+      # storageConfig.indexQueriesCacheConfig.redis.expiration -- How long keys stay in the redis.
+      expiration: 0s
+      # storageConfig.indexQueriesCacheConfig.redis.db -- Database index.
+      db: 1
+      # storageConfig.indexQueriesCacheConfig.redis.poolSize -- Maximum number of connections in the pool.
+      poolSize: 0
+      # storageConfig.indexQueriesCacheConfig.redis.password -- Password to use when connecting to redis.
+      password: ""
+      # storageConfig.indexQueriesCacheConfig.redis.idleTimeout -- Close connections after remaining idle for this duration. If the value is zero, then idle connections are not closed.
+      idleTimeout: 0s
+      # storageConfig.indexQueriesCacheConfig.redis.maxConnectionAge -- Close connections older than this duration. If the value is zero, then the pool does not close connections based on age.
+      maxConnectionAge: 0s
+    fifocache:
+      # storageConfig.indexQueriesCacheConfig.fifocache.maxSizeBytes -- Maximum memory size of the cache in bytes. A unit suffix (KB, MB, GB) may be applied.
+      maxSizeBytes: ""
+      # storageConfig.indexQueriesCacheConfig.fifocache.maxSizeBytes -- Maximum number of entries in the cache.
+      maxSizeItems: 0
+      # chunkStoreConfig.writeDedupeCacheConfig.fifocache.validity -- The expiry duration for the cache.
+      validity: 0s
+
+compactor: {}
+  # cacheTtl: 24h
+  # workingDirectory: /loki/compactor
+  # sharedStore: gcs
+
+# chunkStoreConfig -- Configures how Loki will store data in the specific store.
+chunkStoreConfig:
+  # chunkStoreConfig.maxLookBackPeriod -- Limit how long back data can be queried. Default is disabled.
+  # This should always be set to a value less than or equal to what is set in `tableManager.retentionPeriod` .
+  maxLookBackPeriod: 10s
+  # chunkStoreConfig.cacheLookupsOlderThan -- Cache index entries older than this period. Default is disabled.
+  cacheLookupsOlderThan: 0s
+  # chunkStoreConfig.chunkCacheConfig -- The cache configuration for storing chunks
+  chunkCacheConfig:
+    # chunkStoreConfig.chunkCacheConfig.enableFifocache -- Enable in-memory cache.
+    enableFifocache: false
+    # chunkStoreConfig.chunkCacheConfig.defaultValidity -- The default validity of entries for caches unless overridden.
+    defaultValidity: 1h
+
+    # chunkStoreConfig.chunkCacheConfig.background -- Configures the background cache when memcached is used.
+    background:
+      # chunkStoreConfig.chunkCacheConfig.background.writebackGoroutines -- How many goroutines to use to write back to memcached.
+      writebackGoroutines: 10
+      # chunkStoreConfig.chunkCacheConfig.background.writebackBuffer -- How many chunks to buffer for background write back to memcached.
+      writebackBuffer: 10000
+
+    # chunkStoreConfig.chunkCacheConfig.memcached -- Configures memcached settings.
+    memcached:
+      # chunkStoreConfig.chunkCacheConfig.memcached.expiration -- Configures how long keys stay in memcached.
+      expiration: 1h
+      # chunkStoreConfig.chunkCacheConfig.memcached.batchSize -- Configures how many keys to fetch in each batch request.
+      batchSize: 262144
+      # chunkStoreConfig.chunkCacheConfig.memcached.parallelism -- Maximum active requests to memcached.
+      parallelism: 100
+
+    # chunkStoreConfig.chunkCacheConfig.memcachedClient -- Configures how to connect to one or more memcached servers.
+    memcachedClient:
+      # chunkStoreConfig.chunkCacheConfig.memcachedClient.host -- The hostname to use for memcached services when caching chunks. If empty, no memcached will be used. A SRV lookup will be used.
+      host: ""
+      # chunkStoreConfig.chunkCacheConfig.memcachedClient.service -- SRV service used to discover memcached servers.
+      service: memcached
+      # chunkStoreConfig.chunkCacheConfig.memcachedClient.timeout -- Maximum time to wait before giving up on memcached requests.
+      timeout: 100ms
+      # chunkStoreConfig.chunkCacheConfig.memcachedClient.maxIdleConns -- The maximum number of idle connections in the memcached client pool.
+      maxIdleConns: 100
+      # chunkStoreConfig.chunkCacheConfig.memcachedClient.updateInterval -- The period with which to poll the DNS for memcached servers.
+      updateInterval: 1m
+      # chunkStoreConfig.chunkCacheConfig.memcachedClient.consistentHash -- Whether or not to use a consistent hash to discover multiple memcached servers.
+      consistentHash: true
+
+    redis:
+      # chunkStoreConfig.chunkCacheConfig.redis.endpoint -- Redis Server endpoint to use for caching. A comma-separated list of endpoints for Redis Cluster or Redis Sentinel. If empty, no redis will be used.
+      endpoint: ""
+      # chunkStoreConfig.chunkCacheConfig.redis.masterName -- Redis Sentinel master name. An empty string for Redis Server or Redis Cluster.
+      masterName: ""
+      # chunkStoreConfig.chunkCacheConfig.redis.timeout -- Maximum time to wait before giving up on redis requests.
+      timeout: 100ms
+      # chunkStoreConfig.chunkCacheConfig.redis.expiration -- How long keys stay in the redis.
+      expiration: 0s
+      # chunkStoreConfig.chunkCacheConfig.redis.db -- Database index.
+      db: 1
+      # chunkStoreConfig.chunkCacheConfig.redis.poolSize -- Maximum number of connections in the pool.
+      poolSize: 0
+      # chunkStoreConfig.chunkCacheConfig.redis.password -- Password to use when connecting to redis.
+      password: ""
+      # chunkStoreConfig.chunkCacheConfig.redis.idleTimeout -- Close connections after remaining idle for this duration. If the value is zero, then idle connections are not closed.
+      idleTimeout: 0s
+      # chunkStoreConfig.chunkCacheConfig.redis.maxConnectionAge -- Close connections older than this duration. If the value is zero, then the pool does not close connections based on age.
+      maxConnectionAge: 0s
+
+    fifocache:
+      # chunkStoreConfig.chunkCacheConfig.fifocache.maxSizeBytes -- Maximum memory size of the cache in bytes. A unit suffix (KB, MB, GB) may be applied.
+      maxSizeBytes: ""
+      # chunkStoreConfig.chunkCacheConfig.fifocache.maxSizeBytes -- Maximum number of entries in the cache.
+      maxSizeItems: 0
+      # chunkStoreConfig.chunkCacheConfig.fifocache.validity -- The expiry duration for the cache.
+      validity: 0s
+
+  # chunkStoreConfig.writeDedupeCacheConfig -- The cache configuration for deduplicating writes
+  writeDedupeCacheConfig:
+    # chunkStoreConfig.writeDedupeCacheConfig.enableFifocache -- Enable in-memory cache.
+    enableFifocache: false
+    # chunkStoreConfig.writeDedupeCacheConfig.defaultValidity -- The default validity of entries for caches unless overridden.
+    defaultValidity: 1h
+
+    # chunkStoreConfig.writeDedupeCacheConfig.background -- Configures the background cache when memcached is used.
+    background:
+      # chunkStoreConfig.writeDedupeCacheConfig.background.writebackGoroutines -- How many goroutines to use to write back to memcached.
+      writebackGoroutines: 10
+      # chunkStoreConfig.writeDedupeCacheConfig.background.writebackBuffer -- How many chunks to buffer for background write back to memcached.
+      writebackBuffer: 10000
+
+    # chunkStoreConfig.writeDedupeCacheConfig.memcached -- Configures memcached settings.
+    memcached:
+      # chunkStoreConfig.writeDedupeCacheConfig.memcached.expiration -- Configures how long keys stay in memcached.
+      expiration: 1h
+      # chunkStoreConfig.writeDedupeCacheConfig.memcached.batchSize -- Configures how many keys to fetch in each batch request.
+      batchSize: 262144
+      # chunkStoreConfig.writeDedupeCacheConfig.memcached.parallelism -- Maximum active requests to memcached.
+      parallelism: 100
+
+    # chunkStoreConfig.writeDedupeCacheConfig.memcachedClient -- Configures how to connect to one or more memcached servers.
+    memcachedClient:
+      # chunkStoreConfig.writeDedupeCacheConfig.memcachedClient.host -- The hostname to use for memcached services when caching chunks. If empty, no memcached will be used. A SRV lookup will be used.
+      host: ""
+      # chunkStoreConfig.writeDedupeCacheConfig.memcachedClient.service -- SRV service used to discover memcached servers.
+      service: memcached
+      # chunkStoreConfig.writeDedupeCacheConfig.memcachedClient.timeout -- Maximum time to wait before giving up on memcached requests.
+      timeout: 100ms
+      # chunkStoreConfig.writeDedupeCacheConfig.memcachedClient.maxIdleConns -- The maximum number of idle connections in the memcached client pool.
+      maxIdleConns: 100
+      # chunkStoreConfig.writeDedupeCacheConfig.memcachedClient.updateInterval -- The period with which to poll the DNS for memcached servers.
+      updateInterval: 1m
+      # chunkStoreConfig.writeDedupeCacheConfig.memcachedClient.consistentHash -- Whether or not to use a consistent hash to discover multiple memcached servers.
+      consistentHash: true
+
+    redis:
+      # chunkStoreConfig.writeDedupeCacheConfig.redis.endpoint -- Redis Server endpoint to use for caching. A comma-separated list of endpoints for Redis Cluster or Redis Sentinel. If empty, no redis will be used.
+      endpoint: ""
+      # chunkStoreConfig.writeDedupeCacheConfig.redis.masterName -- Redis Sentinel master name. An empty string for Redis Server or Redis Cluster.
+      masterName: ""
+      # chunkStoreConfig.writeDedupeCacheConfig.redis.timeout -- Maximum time to wait before giving up on redis requests.
+      timeout: 100ms
+      # chunkStoreConfig.writeDedupeCacheConfig.redis.expiration -- How long keys stay in the redis.
+      expiration: 0s
+      # chunkStoreConfig.writeDedupeCacheConfig.redis.db -- Database index.
+      db: 1
+      # chunkStoreConfig.writeDedupeCacheConfig.redis.poolSize -- Maximum number of connections in the pool.
+      poolSize: 0
+      # chunkStoreConfig.writeDedupeCacheConfig.redis.password -- Password to use when connecting to redis.
+      password: ""
+      # chunkStoreConfig.writeDedupeCacheConfig.redis.idleTimeout -- Close connections after remaining idle for this duration. If the value is zero, then idle connections are not closed.
+      idleTimeout: 0s
+      # chunkStoreConfig.writeDedupeCacheConfig.redis.maxConnectionAge -- Close connections older than this duration. If the value is zero, then the pool does not close connections based on age.
+      maxConnectionAge: 0s
+
+    fifocache:
+      # chunkStoreConfig.writeDedupeCacheConfig.fifocache.maxSizeBytes -- Maximum memory size of the cache in bytes. A unit suffix (KB, MB, GB) may be applied.
+      maxSizeBytes: ""
+      # chunkStoreConfig.writeDedupeCacheConfig.fifocache.maxSizeBytes -- Maximum number of entries in the cache.
+      maxSizeItems: 0
+      # chunkStoreConfig.writeDedupeCacheConfig.fifocache.validity -- The expiry duration for the cache.
+      validity: 0s
+
+# tableManager -- Configures the table manager for retention
+tableManager:
+  # tableManager.retentionDeletesEnabled -- Master 'on-switch' for table retention deletions.
+  retentionDeletesEnabled: false
+  # tableManager.retentionPeriod -- How far back tables will be kept before they are deleted. 0s disables deletion.
+  # The retention period must be a multiple of the index / chunks table "period" (see periodConfig).
+  retentionPeriod: 10s
+  # tableManager.throughputUpdatesDisabled -- Master 'off-switch' for table capacity updates, e.g. when troubleshooting.
+  throughputUpdatesDisabled: false
+  # tableManager.pollInterval -- Period with which the table manager will poll for tables.
+  pollInterval: 2m
+  # tableManager.creationGracePeriod -- Duration a table will be created before it is needed.
+  creationGracePeriod: 10m
+
+  # tableManager.indexTablesProvisioning -- Configures management of the index tables for DynamoDB.
+  indexTablesProvisioning:
+    # tableManager.indexTablesProvisioning.inactiveReadScaleLastn -- Number of last inactive tables to enable read autoscale.
+    inactiveReadScaleLastn: 0
+    # tableManager.indexTablesProvisioning.inactiveWriteScaleLastn -- Number of last inactive tables to enable write autoscale.
+    inactiveWriteScaleLastn: 0
+    # tableManager.indexTablesProvisioning.enableOndemandThroughputMode -- Enables on-demand throughput provisioning for the storage provider, if supported. Applies only to tables which are not autoscaled.
+    enableOndemandThroughputMode: false
+    # tableManager.indexTablesProvisioning.provisionedWriteThroughput -- DynamoDB table default write throughput.
+    provisionedWriteThroughput: 3000
+    # tableManager.indexTablesProvisioning.provisionedReadThroughput -- DynamoDB table default read throughput.
+    provisionedReadThroughput: 300
+    # tableManager.indexTablesProvisioning.enableInactiveThroughputOnDemandMode -- Enables on-demand throughput provisioning for the storage provide, if supported.
+    # Applies only to tables which are not autoscaled.
+    enableInactiveThroughputOnDemandMode: false
+    # tableManager.indexTablesProvisioning.inactiveWriteThroughput -- DynamoDB table write throughput for inactive tables.
+    inactiveWriteThroughput: 1
+    # tableManager.indexTablesProvisioning.inactiveReadThroughput -- DynamoDB table read throughput for inactive tables.
+    inactiveReadThroughput: 300
+
+    # tableManager.indexTablesProvisioning.writeScale -- Active table write autoscale config.
+    writeScale:
+      # tableManager.indexTablesProvisioning.writeScale.enabled -- Whether or not autoscaling should be enabled.
+      enabled: false
+      # tableManager.indexTablesProvisioning.writeScale.roleArn -- AWS AutoScaling role ARN.
+      roleArn: ""
+      # tableManager.indexTablesProvisioning.writeScale.minCapacity -- DynamoDB minimum provision capacity.
+      minCapacity: 3000
+      # tableManager.indexTablesProvisioning.writeScale.maxCapacity -- DynamoDB maximum provision capacity.
+      maxCapacity: 6000
+      # tableManager.indexTablesProvisioning.writeScale.outCooldown -- DynamoDB minimum seconds between each autoscale up.
+      outCooldown: 1800
+      # tableManager.indexTablesProvisioning.writeScale.inCooldown -- DynamoDB minimum seconds between each autoscale down.
+      inCooldown: 1800
+      # tableManager.indexTablesProvisioning.writeScale.target -- DynamoDB target ratio of consumed capacity to provisioned capacity.
+      target: 80.0
+
+    # tableManager.indexTablesProvisioning.inactiveWriteScale -- Inactive table write autoscale config.
+    inactiveWriteScale:
+      # tableManager.indexTablesProvisioning.inactiveWriteScale.enabled -- Whether or not autoscaling should be enabled.
+      enabled: false
+      # tableManager.indexTablesProvisioning.inactiveWriteScale.roleArn -- AWS AutoScaling role ARN.
+      roleArn: ""
+      # tableManager.indexTablesProvisioning.inactiveWriteScale.minCapacity -- DynamoDB minimum provision capacity.
+      minCapacity: 3000
+      # tableManager.indexTablesProvisioning.inactiveWriteScale.maxCapacity -- DynamoDB maximum provision capacity.
+      maxCapacity: 6000
+      # tableManager.indexTablesProvisioning.inactiveWriteScale.outCooldown -- DynamoDB minimum seconds between each autoscale up.
+      outCooldown: 1800
+      # tableManager.indexTablesProvisioning.inactiveWriteScale.inCooldown -- DynamoDB minimum seconds between each autoscale down.
+      inCooldown: 1800
+      # tableManager.indexTablesProvisioning.inactiveWriteScale.target -- DynamoDB target ratio of consumed capacity to provisioned capacity.
+      target: 80.0
+
+    # tableManager.indexTablesProvisioning.readScale -- Active table read autoscale config.
+    readScale:
+      # tableManager.indexTablesProvisioning.readScale.enabled -- Whether or not autoscaling should be enabled.
+      enabled: false
+      # tableManager.indexTablesProvisioning.readScale.roleArn -- AWS AutoScaling role ARN.
+      roleArn: ""
+      # tableManager.indexTablesProvisioning.readScale.minCapacity -- DynamoDB minimum provision capacity.
+      minCapacity: 3000
+      # tableManager.indexTablesProvisioning.readScale.maxCapacity -- DynamoDB maximum provision capacity.
+      maxCapacity: 6000
+      # tableManager.indexTablesProvisioning.readScale.outCooldown -- DynamoDB minimum seconds between each autoscale up.
+      outCooldown: 1800
+      # tableManager.indexTablesProvisioning.readScale.inCooldown -- DynamoDB minimum seconds between each autoscale down.
+      inCooldown: 1800
+      # tableManager.indexTablesProvisioning.readScale.target -- DynamoDB target ratio of consumed capacity to provisioned capacity.
+      target: 80.0
+
+    # tableManager.indexTablesProvisioning.inactiveReadScale -- Inactive table read autoscale config.
+    inactiveReadScale:
+      # tableManager.indexTablesProvisioning.inactiveReadScale.enabled -- Whether or not autoscaling should be enabled.
+      enabled: false
+      # tableManager.indexTablesProvisioning.inactiveReadScale.roleArn -- AWS AutoScaling role ARN.
+      roleArn: ""
+      # tableManager.indexTablesProvisioning.inactiveReadScale.minCapacity -- DynamoDB minimum provision capacity.
+      minCapacity: 3000
+      # tableManager.indexTablesProvisioning.inactiveReadScale.maxCapacity -- DynamoDB maximum provision capacity.
+      maxCapacity: 6000
+      # tableManager.indexTablesProvisioning.inactiveReadScale.outCooldown -- DynamoDB minimum seconds between each autoscale up.
+      outCooldown: 1800
+      # tableManager.indexTablesProvisioning.inactiveReadScale.inCooldown -- DynamoDB minimum seconds between each autoscale down.
+      inCooldown: 1800
+      # tableManager.indexTablesProvisioning.inactiveReadScale.target -- DynamoDB target ratio of consumed capacity to provisioned capacity.
+      target: 80.0
+
+  # tableManager.chunkTablesProvisioning -- Configures management of the chunk tables for DynamoDB.
+  chunkTablesProvisioning:
+    # tableManager.chunkTablesProvisioning.inactiveReadScaleLastn -- Number of last inactive tables to enable read autoscale.
+    inactiveReadScaleLastn: 0
+    # tableManager.chunkTablesProvisioning.inactiveWriteScaleLastn -- Number of last inactive tables to enable write autoscale.
+    inactiveWriteScaleLastn: 0
+    # tableManager.chunkTablesProvisioning.enableOndemandThroughputMode -- Enables on-demand throughput provisioning for the storage provider, if supported. Applies only to tables which are not autoscaled.
+    enableOndemandThroughputMode: false
+    # tableManager.chunkTablesProvisioning.provisionedWriteThroughput -- DynamoDB table default write throughput.
+    provisionedWriteThroughput: 3000
+    # tableManager.chunkTablesProvisioning.provisionedReadThroughput -- DynamoDB table default read throughput.
+    provisionedReadThroughput: 300
+    # tableManager.chunkTablesProvisioning.enableInactiveThroughputOnDemandMode -- Enables on-demand throughput provisioning for the storage provide, if supported.
+    # Applies only to tables which are not autoscaled.
+    enableInactiveThroughputOnDemandMode: false
+    # tableManager.chunkTablesProvisioning.inactiveWriteThroughput -- DynamoDB table write throughput for inactive tables.
+    inactiveWriteThroughput: 1
+    # tableManager.chunkTablesProvisioning.inactiveReadThroughput -- DynamoDB table read throughput for inactive tables.
+    inactiveReadThroughput: 300
+
+    # tableManager.chunkTablesProvisioning.writeScale -- Active table write autoscale config.
+    writeScale:
+      # tableManager.chunkTablesProvisioning.writeScale.enabled -- Whether or not autoscaling should be enabled.
+      enabled: false
+      # tableManager.chunkTablesProvisioning.writeScale.roleArn -- AWS AutoScaling role ARN.
+      roleArn: ""
+      # tableManager.chunkTablesProvisioning.writeScale.minCapacity -- DynamoDB minimum provision capacity.
+      minCapacity: 3000
+      # tableManager.chunkTablesProvisioning.writeScale.maxCapacity -- DynamoDB maximum provision capacity.
+      maxCapacity: 6000
+      # tableManager.chunkTablesProvisioning.writeScale.outCooldown -- DynamoDB minimum seconds between each autoscale up.
+      outCooldown: 1800
+      # tableManager.chunkTablesProvisioning.writeScale.inCooldown -- DynamoDB minimum seconds between each autoscale down.
+      inCooldown: 1800
+      # tableManager.chunkTablesProvisioning.writeScale.target -- DynamoDB target ratio of consumed capacity to provisioned capacity.
+      target: 80.0
+
+    # tableManager.chunkTablesProvisioning.inactiveWriteScale -- Inactive table write autoscale config.
+    inactiveWriteScale:
+      # tableManager.chunkTablesProvisioning.inactiveWriteScale.enabled -- Whether or not autoscaling should be enabled.
+      enabled: false
+      # tableManager.chunkTablesProvisioning.inactiveWriteScale.roleArn -- AWS AutoScaling role ARN.
+      roleArn: ""
+      # tableManager.chunkTablesProvisioning.inactiveWriteScale.minCapacity -- DynamoDB minimum provision capacity.
+      minCapacity: 3000
+      # tableManager.chunkTablesProvisioning.inactiveWriteScale.maxCapacity -- DynamoDB maximum provision capacity.
+      maxCapacity: 6000
+      # tableManager.chunkTablesProvisioning.inactiveWriteScale.outCooldown -- DynamoDB minimum seconds between each autoscale up.
+      outCooldown: 1800
+      # tableManager.chunkTablesProvisioning.inactiveWriteScale.inCooldown -- DynamoDB minimum seconds between each autoscale down.
+      inCooldown: 1800
+      # tableManager.chunkTablesProvisioning.inactiveWriteScale.target -- DynamoDB target ratio of consumed capacity to provisioned capacity.
+      target: 80.0
+
+    # tableManager.chunkTablesProvisioning.readScale -- Active table read autoscale config.
+    readScale:
+      # tableManager.chunkTablesProvisioning.readScale.enabled -- Whether or not autoscaling should be enabled.
+      enabled: false
+      # tableManager.chunkTablesProvisioning.readScale.roleArn -- AWS AutoScaling role ARN.
+      roleArn: ""
+      # tableManager.chunkTablesProvisioning.readScale.minCapacity -- DynamoDB minimum provision capacity.
+      minCapacity: 3000
+      # tableManager.chunkTablesProvisioning.readScale.maxCapacity -- DynamoDB maximum provision capacity.
+      maxCapacity: 6000
+      # tableManager.chunkTablesProvisioning.readScale.outCooldown -- DynamoDB minimum seconds between each autoscale up.
+      outCooldown: 1800
+      # tableManager.chunkTablesProvisioning.readScale.inCooldown -- DynamoDB minimum seconds between each autoscale down.
+      inCooldown: 1800
+      # tableManager.chunkTablesProvisioning.readScale.target -- DynamoDB target ratio of consumed capacity to provisioned capacity.
+      target: 80.0
+
+    # tableManager.chunkTablesProvisioning.inactiveReadScale -- Inactive table read autoscale config.
+    inactiveReadScale:
+      # tableManager.chunkTablesProvisioning.inactiveReadScale.enabled -- Whether or not autoscaling should be enabled.
+      enabled: false
+      # tableManager.chunkTablesProvisioning.inactiveReadScale.roleArn -- AWS AutoScaling role ARN.
+      roleArn: ""
+      # tableManager.chunkTablesProvisioning.inactiveReadScale.minCapacity -- DynamoDB minimum provision capacity.
+      minCapacity: 3000
+      # tableManager.chunkTablesProvisioning.inactiveReadScale.maxCapacity -- DynamoDB maximum provision capacity.
+      maxCapacity: 6000
+      # tableManager.chunkTablesProvisioning.inactiveReadScale.outCooldown -- DynamoDB minimum seconds between each autoscale up.
+      outCooldown: 1800
+      # tableManager.chunkTablesProvisioning.inactiveReadScale.inCooldown -- DynamoDB minimum seconds between each autoscale down.
+      inCooldown: 1800
+      # tableManager.chunkTablesProvisioning.inactiveReadScale.target -- DynamoDB target ratio of consumed capacity to provisioned capacity.
+      target: 80.0
+
+frontendWorker: {}
+  # # -- frontendWorker.frontendAddress -- Address of query frontend service, in host:port format.
+  # frontendAddress: ""
+  # # -- frontendWorker.parallelism -- Number of simultaneous queries to process.
+  # parallelism: 10
+  # # -- frontendWorker.dnsLookupDuration -- How often to query DNS.
+  # dnsLookupDuration: 10s
+  # # -- frontendWorker.grpcClientConfig -- gRPC block config
+  # grpcClientConfig:
+  #   # -- frontendWorker.grpcClientConfig.maxRecvMsgSize -- The maximum size in bytes the client can receive.
+  #   maxRecvMsgSize: 104857600
+  #   # -- frontendWorker.grpcClientConfig.maxSendMsgSize -- The maximum size in bytes the client can send.
+  #   maxSendMsgSize: 16777216
+  #   # -- frontendWorker.grpcClientConfig.grpcCompression -- Use compression when sending messages. Supported values are: 'gzip', 'snappy' and '' (disable compression).
+  #   grpcCompression: gzip
+  #   # -- frontendWorker.grpcClientConfig.rateLimit -- Rate limit for gRPC client. 0 is disabled.
+  #   rateLimit: 0
+  #   # -- frontendWorker.grpcClientConfig.rateLimitBurst -- Rate limit burst for gRPC client.
+  #   rateLimitBurst: 0
+  #   # -- frontendWorker.grpcClientConfig.maxRecvMsgSize -- Enable backoff and retry when a rate limit is hit.
+  #   backoffOnRatelimits: false
+  #   # -- frontendWorker.grpcClientConfig.backoffConfig -- Configures backoff when enabled.
+  #   backoffConfig:
+  #     # -- frontendWorker.grpcClientConfig.backoffConfig.minPeriod -- Minimum delay when backing off.
+  #     minPeriod: 100ms
+  #     # -- frontendWorker.grpcClientConfig.backoffConfig.maxPeriod -- The maximum delay when backing off.
+  #     maxPeriod: 10s
+  #     # -- frontendWorker.grpcClientConfig.backoffConfig.maxRetries -- Number of times to backoff and retry before failing.
+  #     maxRetries: 10
+
+# runtimeConfig -- Configuration for "runtime config" module, responsible for reloading runtime configuration file.
+runtimeConfig:
+  # runtimeConfig.period -- How often to check the file.
+  period: 10s
+  # runtimeConfig.file -- Configuration file to periodically check and reload.
+  file: ""
+  # file: |
+  #   overrides:
+  #     tenant1:
+  #       ingestion_rate_mb: 10
+  #       max_streams_per_user: 100000
+  #       max_chunks_per_query: 100000
+  #     tenant2:
+  #       max_streams_per_user: 1000000
+  #       max_chunks_per_query: 1000000
+  #   multi_kv_config:
+  #       mirror-enabled: false
+  #       primary: consul
+
+
+logLevel: warn
+
+alertingGroups: []
+  # - name: should_fire
+  #   rules:
+  #     - alert: HighPercentageError
+  #       expr: |
+  #         sum(rate({app="foo", env="production"} |= "error" [5m])) by (job)
+  #           /
+  #         sum(rate({app="foo", env="production"}[5m])) by (job)
+  #           > 0.05
+  #       for: 10m
+  #       labels:
+  #           severity: page
+  #       annotations:
+  #           summary: High request latency
+  # - name: credentials_leak
+  #   rules:
+  #     - alert: http-credentials-leaked
+  #       annotations:
+  #         message: "{{ $labels.job }} is leaking http basic auth credentials."
+  #       expr: 'sum by (cluster, job, pod) (count_over_time({namespace="prod"} |~ "http(s?)://(\\w+):(\\w+)@" [5m]) > 0)'
+  #       for: 10m
+  #       labels:
+  #         severity: critical
+
+#
+# --------------------------------------------------------------------------------------------------------------------------------------- Application
+#
+
+# --- Pod and container configuration
+#
+image:
+  # -- Overrides the image repository
+  repository: quay.io/kube-ops/loki
+  # -- Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+podLabels: {}
+
+podAnnotations: {}
+  # fluentbit.io/exclude: "true"
+  # prometheus.io/port: "8000"
+  # prometheus.io/scrape: "true"
+  # kubernetes.io/ingress-bandwidth: 10M
+  # kubernetes.io/egress-bandwidth: 10M
+  # seccomp.security.alpha.kubernetes.io/pod: runtime/default
+  # container.seccomp.security.alpha.kubernetes.io/chart-template: unconfined,docker/default,localhost/<path>
+  # security.alpha.kubernetes.io/sysctls: kernel.shm_rmid_forced=1
+  # security.alpha.kubernetes.io/unsafe-sysctls: net.ipv4.route.min_pmtu=1000,kernel.msgmax=1 2 3
+
+# We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+resources: {}
+  # limits:
+  #   cpu: 1000m
+  #   memory: 1Gi
+  # requests:
+  #   cpu: 400m
+  #   memory: 400Mi
+
+## DNS settings
+## ref: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
+dnsPolicy: ""
+# dnsPolicy: None
+# Custom pod DNS policy. Apply if `hostNetwork: true`
+# dnsPolicy: ClusterFirstWithHostNet
+
+dnsConfig: {}
+  # nameservers:
+  #   - 1.2.3.4
+  # searches:
+  #   - ns1.svc.cluster-domain.example
+  #   - my.dns.search.suffix
+  # options:
+  #   - name: ndots
+  #     value: "2"
+  #   - name: edns0
+
+## Adding entries to Pod /etc/hosts with HostAliases
+## ref: https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+hostAliases: []
+  # - ip: "127.0.0.1"
+  #   hostnames:
+  #   - "foo.local"
+  #   - "bar.local"
+  # - ip: "10.1.2.3"
+  #   hostnames:
+  #   - "foo.remote"
+  #   - "bar.remote"
+
+# postStartHook -- This hook is executed immediately after a container is created.
+# However, there is no guarantee that the hook will execute before the container ENTRYPOINT.
+postStartHook: {}
+  # httpGet:
+  #   host: <podIP>
+  #   path: /
+  #   port: http
+  #   scheme: HTTP
+  #   httpHeaders:
+  #     - name: X-Header
+  #       value: myvalue
+
+# preStopHook -- This hook is called immediately before a container is terminated due to an API request or management event
+# such as liveness probe failure, preemption, resource contention and others.
+# ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+preStopHook: {}
+  # exec:
+  #   command:
+  #     - /bin/sh
+  #     - '-c'
+  #     - sleep 5 && kill -SIGTERM $(pidof vault)
+
+# --- Deployment
+
+# Only used for autoscaling
+deploymentType: StatefulSet
+
+labels: {}
+  # kubernetes.io/cluster-service: "true"
+  # kubernetes.io/name: "CoreDNS"
+
+annotations: {}
+
+# podManagementPolicy -- Specifies the strategy used to replace old Pods by new ones
+podManagementPolicy: OrderedReady
+# podManagementPolicy: Parallel
+
+# replicas -- Replicas count
+replicas: 1
+
+# revisionHistoryLimit -- specifies the number of old ReplicaSets to retain to allow rollback
+# ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#revision-history-limit
+revisionHistoryLimit: 10
+
+## Horizontal Pod Autoscaler
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+autoscaling:
+  # autoscaling.enabled -- Specifies the horizontal pod autoscaling is enabled
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 80
+
+# updateStrategy.type -- Specifies the strategy used to replace old Pods by new ones
+# updateStrategy.rollingUpdate.partition -- If a partition is specified, all Pods with an ordinal that is greater than or equal to the partition will be updated when the StatefulSet's .spec.template is updated (updateStrategy.type==RollingUpdate)
+updateStrategy:
+  type: RollingUpdate
+  # type: OnDelete
+
+# topologySpreadConstraints -- control how Pods are spread across your cluster among failure-domains
+# such as regions, zones, nodes, and other user-defined topology domains.
+# ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: kubernetes.io/hostname
+  #   whenUnsatisfiable: DoNotSchedule
+  # - maxSkew: 1
+  #   topologyKey: topology.kubernetes.io/zone
+  #   whenUnsatisfiable: ScheduleAnyway
+  #   selector:
+  #     matchLabels:
+  #       foo: bar
+
+# --- Scheduling and Eviction
+
+# schedulerName -- Overrides default scheduler
+schedulerName: ""
+
+# runtimeClassName -- Overrides default runtime class
+runtimeClassName: ""
+
+priority: 0
+
+# priorityClassName -- Overrides default priority class
+# ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+priorityClassName: ""
+# priorityClassName: system-cluster-critical
+
+# terminationGracePeriodSeconds -- Grace period before the Pod is allowed to be forcefully killed
+# ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+terminationGracePeriodSeconds: 4800
+
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+  # - key: node.kubernetes.io/not-ready
+  #   operator: Exists
+  #   effect: NoExecute
+  #   tolerationSeconds: 300
+  # - key: "CriticalAddonsOnly"
+  #   operator: "Exists"
+  # - effect: "NoExecute"
+  #   operator: "Exists"
+  # - effect: "NoSchedule"
+  #   operator: "Exists"
+
+# affinity -- Affinity for pod assignment
+# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+affinity: {}
+  # podAntiAffinity:
+  #   preferredDuringSchedulingIgnoredDuringExecution:
+  #     - weight: 1
+  #       podAffinityTerm:
+  #         labelSelector:
+  #           matchLabels:
+  #             app.kubernetes.io/name: chart-template
+  #             app.kubernetes.io/instance: release-name
+  #         topologyKey: kubernetes.io/hostname
+
+## PodDisruptionBudget
+## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+pdb:
+  # pdb.enabled -- Specifies whether a pod disruption budget should be created
+  enabled: false
+
+  # pdb.minAvailable -- Description of the number of pods from that set that must still be available after the eviction
+  # minAvailable: 1
+
+  # pdb.minAvailable -- Description of the number of pods from that set that can be unavailable after the eviction
+  # maxUnavailable: 0
+
+#
+# ------------------------------------------------------------------------------------------------------------------------------------------ Security
+#
+
+serviceAccount:
+  # serviceAccount.create -- Specifies whether a service account should be created
+  create: true
+
+  # serviceAccount.annotations -- Annotations to add to the service account
+  annotations: {}
+
+  # serviceAccount.labels -- Labels to add to the service account
+  labels: {}
+
+  # serviceAccount.name -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+rbac:
+  # rbac.create -- Specifies whether a cluster role should be created
+  create: true
+
+  annotations: {}
+
+  # -- The name of the cluster role to use.
+  # @default -- Generated using the fullname template
+  name: ""
+
+# podSecurityContext -- Pod security settings
+podSecurityContext:
+  fsGroup: 10001
+  runAsNonRoot: true
+  # fsGroupChangePolicy: OnRootMismatch
+  # sysctls:
+  #   - name: kernel.shm_rmid_forced
+  #     value: 1
+  #   - name: net.ipv4.route.min_pmtu
+  #     value: 1000
+  #     unsafe: true
+  # seccompProfile:
+  #   type: RuntimeDefault|Localhost|Unconfined
+  #   localhostProfile: my-profiles/profile-allow.json
+  # seLinuxOptions:
+  #   level: "s0:c123,c456"
+  # supplementalGroups:
+  #   - 1
+  # windowsOptions:
+  #   gmsaCredentialSpec: ""
+  #   gmsaCredentialSpecName: ""
+  #   runAsUserName: ""
+
+## Pod security policy
+podSecurityPolicy:
+  # -- Specifies whether a pod security policy should be enabled
+  enabled: true
+
+  annotations: {}
+
+  # -- Specifies whether a pod security policy should be created
+  create: true
+
+  # -- The name of the pod security policy to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+#
+# ------------------------------------------------------------------------------------------------------------------------------------------- Network
+#
+
+# -- Configure startup probe
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+startupProbe: {}
+
+## HTTP service configuration
+service:
+  # -- HTTP port number
+  httpPort: 80
+  # -- gRPC port number
+  grpcPort: 9095
+
+  # -- HTTP node port number (service.type==NodePort)
+  # -- gRPC node port number (service.type==NodePort)
+  httpNodePort: 30080
+  grpcNodePort: 30095
+
+  # -- Kubernetes ServiceTypes allow you to specify what kind of Service you want
+  # ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+
+  # -- If you set service.spec.externalTrafficPolicy to the value Local,
+  # kube-proxy only proxies proxy requests to local endpoints, and does not forward traffic to other nodes.
+  # This approach preserves the original source IP address. If there are no local endpoints,
+  # packets sent to the node are dropped, so you can rely on the correct source-ip in any packet processing rules
+  # you might apply a packet that make it through to the endpoint.
+  # ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-nodeport
+  externalTrafficPolicy: Cluster
+  # externalTrafficPolicy: Local
+
+  # -- Exposes the Service on a cluster IP
+  # ref: https://kubernetes.io/docs/concepts/services-networking/service/#choosing-your-own-ip-address
+  clusterIP: ""
+
+  # -- enables a service to route traffic based upon the Node topology of the cluster
+  # ref: https://kubernetes.io/docs/concepts/services-networking/service-topology/#using-service-topology
+  # Kubernetes >= kubeVersion 1.18
+  topology: false
+
+  # service.topologyKeys -- A preference-order list of topology keys which implementations of services should use to preferentially sort endpoints
+  # when accessing this Service, it can not be used at the same time as externalTrafficPolicy=Local
+  # ref: https://kubernetes.io/docs/concepts/services-networking/service-topology/#using-service-topology
+  topologyKeys: []
+    # - "kubernetes.io/hostname"
+    # - "topology.kubernetes.io/zone"
+    # - "topology.kubernetes.io/region"
+    # - "*"
+
+  # service.annotations -- Annotations for Service resource
+  annotations: {}
+    # api.service.kubernetes.io/path: cxfcdi
+    # api.service.kubernetes.io/scheme: http
+    # api.service.kubernetes.io/protocol: REST|XML-RPC|SOAP
+    # api.service.kubernetes.io/description-path: cxfcdi/swagger.json
+    # api.service.kubernetes.io/description-language: WSDL|WADL|SwaggerJSON|SwaggerYAML
+    # service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012
+    # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: (https|http|ssl|tcp)
+
+  # -- Additional labels for Service resource
+  labels: {}
+
+  # -- Only applies to Service Type: LoadBalancer LoadBalancer will get created with the IP specified in this field.
+  loadBalancerIP: ""
+
+  # -- If specified and supported by the platform,
+  # this will restrict traffic through the cloud-provider load-balancer will be restricted to the specified client IPs.
+  # ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/
+  loadBalancerSourceRanges: []
+
+## Ingress settings
+ingress:
+  # ingress.enabled -- Specifies whether a ingress should be created
+  enabled: false
+
+  className: ""
+
+  tls: []
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-template.example.com
+
+  hosts:
+    - host: chart-template.example.com
+      paths:
+        - /
+        # - /docs
+        # - /api
+
+  labels: {}
+  annotations: {}
+    # kubernetes.io/ingress.class
+    # ingress.kubernetes.io/browser-xss-filter: 'true'
+    # ingress.kubernetes.io/content-type-nosniff: 'true'
+    # ingress.kubernetes.io/ssl-redirect: 'true'
+    # ingress.kubernetes.io/ssl-temporary-redirect: 'true'
+    # kubernetes.io/tls-acme: 'true'
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+
+# Create NetworkPolicy
+# ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+networkPolicy:
+  # networkPolicy.enabled -- Specifies whether a NetworkPolicy should be created
+  enabled: false
+  # networkPolicy.labels -- Additional labels for NetworkPolicy
+  labels: {}
+  # networkPolicy.annotations -- Annotations for NetworkPolicy
+  annotations: {}
+
+  # networkPolicy.ingress -- Ingress rules
+  ingress:
+    - {}
+    # - from:
+    #     - ipBlock:
+    #         cidr: 172.17.0.0/16
+    #         except:
+    #         - 172.17.1.0/24
+    #     - namespaceSelector:
+    #         matchLabels:
+    #           project: myproject
+    #     - podSelector:
+    #         matchLabels:
+    #           role: frontend
+    #     - podSelector:
+    #         matchLabels:
+    #           app: bookstore
+    #           role: api
+    #   ports:
+    #     - protocol: TCP
+    #       port: 6379
+
+  # networkPolicy.egress -- Egress rules
+  egress:
+    - {}
+    # - to:
+    #     - ipBlock:
+    #         cidr: 10.0.0.0/24
+    #   ports:
+    #     - protocol: TCP
+    #       port: 5978
+
+# --- Monitoring
+
+# -- Specifies whether a ServiceMonitor should be created (prometheus operator CRDs required)
+# ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#servicemonitor
+serviceMonitor:
+  enabled: false
+  annotations: {}
+  labels: {}
+  namespace: monitoring
+  interval: 30s
+  scrapeTimeout: 30s
+  metricRelabelings: []
+  honorLabels: false
+  jobLabel: app.kubernetes.io/instance
+  path: /metrics
+
+#
+# ---------------------------------------------------------------------------------------------------------------------------------------------- Data
+#
+
+## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+## If you set enabled as "True", you need :
+## - create a pv which above 10Gi and has same namespace with loki
+## - keep storageClassName same with below setting
+persistence:
+  ## If true, use a Persistent Volume Claim, If false, use emptyDir
+  ##
+  enabled: true
+  storageClassName: "local-storage"
+  size: 8Gi
+  accessModes: [ ReadWriteOnce ]
+  volumeMode: Filesystem
+
+  selector: {}
+    # matchLabels:
+    #   release: "stable"
+    # matchExpressions:
+    #   - {key: environment, operator: In, values: [dev]}
+
+  dataSource: {}
+    # name: new-snapshot-test
+    # kind: VolumeSnapshot
+    # apiGroup: snapshot.storage.k8s.io
+    # # ...or...
+    # name: existing-src-pvc-name
+    # kind: PersistentVolumeClaim
+
+  annotations: {}
+    # volume.beta.kubernetes.io/storage-class: example-hostpath
+    # volume.beta.kubernetes.io/storage-provisioner: example.com/hostpath
+
+#
+# --------------------------------------------------------------------------------------------------------------------------------------------- Extra
+#
+
+# initContainers -- Specifies init containers
+initContainers: []
+  # - name: fix-permissions
+  #   image: busybox
+  #   command: ["chown", "-R", "1042:1042", "/data"]
+  #   volumeMounts:
+  #     - name: data
+  #       mountPath: /data
+  #   securityContext:
+  #     runAsUser: 0
+
+ephemeralContainers: []
+
+# extraContainers -- Specifies additional containers
+extraContainers: []
+  # - name: fix-permissions
+  #   image: busybox
+  #   command: ["chown", "-R", "1042:1042", "/data"]
+  #   volumeMounts:
+  #     - name: data
+  #       mountPath: /data
+  #   securityContext:
+  #     runAsUser: 0
+
+# extraArgs -- Additional CLI arguments for application
+extraArgs: []
+  # - "--debug"
+  # - "--verbose"
+
+# extraVolumes -- Additional volumes for application
+extraVolumes: []
+  # - name: other-config
+  #   configMap:
+  #     name: other-config
+  #     items:
+  #       - key: other.conf
+  #         path: configs/custom.conf
+  #     defaultMode: 0400
+  # - name: hugepage-2mi
+  #   emptyDir:
+  #     medium: HugePages-2Mi
+  # - name: hugepage-1gi
+  #   emptyDir:
+  #     medium: HugePages-1Gi
+  # - name: scratch
+  #   ephemeral:
+  #     metadata:
+  #       labels:
+  #         type: fluentd-elasticsearch-volume
+  #     spec:
+  #       accessModes: [ "ReadWriteOnce" ]
+  #       storageClassName: "scratch-storage-class"
+  #       resources:
+  #         requests:
+  #           storage: 1Gi
+  # - name: all-in-one
+  #   projected:
+  #     sources:
+  #       - secret:
+  #           name: my-secret
+  #           items:
+  #             - key: secret-key
+  #               path: secrets/secret-key
+  #       - serviceAccountToken:
+  #           audience: api
+  #           expirationSeconds: 3600
+  #           path: token
+  #       - downwardAPI:
+  #           items:
+  #             - path: labels
+  #               fieldRef:
+  #                 fieldPath: metadata.labels
+  #             - path: annotations
+  #               fieldRef:
+  #                 fieldPath: metadata.annotations
+  #             - path: cpu-limit
+  #               resourceFieldRef:
+  #                 containerName: {{ .Chart.Name }}
+  #                 resource: limits.cpu
+  #       - configMap:
+  #           name: my-config
+  #           items:
+  #             - key: custom.conf
+  #               path: configs/custom.conf
+  # - name: tls
+  #   csi:
+  #     driver: csi.cert-manager.io
+  #     volumeAttributes:
+  #       csi.cert-manager.io/issuer-kind: ClusterIssuer
+  #       csi.cert-manager.io/issuer-name: ca-issuer
+  #       csi.cert-manager.io/dns-names: a.example.com,b.example.com,my-service.sandbox.svc.cluster.local
+  #       csi.cert-manager.io/ip-sans: 192.0.2.1,192.0.2.2
+  #       csi.cert-manager.io/common-name: www.example.com
+  #       csi.cert-manager.io/key-usages: "digital signature,key encipherment,signing,timestamping"
+  #       csi.cert-manager.io/certificate-file: crt.pem
+  #       csi.cert-manager.io/privatekey-file: key.pem
+
+# extraVolumes -- Additional mounts for application
+extraVolumeMounts: []
+  # - name: other-config
+  #   mountPath: /configs
+  #   readOnly: true
+  # - mountPath: /hugepages-2Mi
+  #   name: hugepage-2mi
+  # - mountPath: /hugepages-1Gi
+  #   name: hugepage-1gi
+
+# extraEnvVars -- Additional environment variables
+extraEnvVars: []
+  # - name: TEST_VAR
+  #   value: 42
+  # - name: MY_NODE_NAME
+  #   valueFrom:
+  #     fieldRef:
+  #       fieldPath: spec.nodeName
+
+# --- Promtail values
+
+## See: https://gitlab.com/kube-ops/helm/apps/promtail/-/blob/master/values.yaml
+promtail:
+  enabled: true
+
+  lokiUrl: http://loki/loki/api/v1/push
+
+  pods:
+    scrape: true
+
+    parseGolang: false
+    parseJava: false
+    parseLevels: false
+    parseNginxAccessLog: true
+    parseKnownApps: false
+
+    annotationPrefix: logging.kube-ops.io
+
+    dropDebug: true
+    dropDeprecated: true
+
+    excludeNamespaces: 
+      - kube-system
+      - default
+
+    extraPipelineStages: []
+      # - match:
+      #     selector: '{app="myapp"}'
+      #     stages:
+      #       - regex:
+      #           expression: 'custom parse config'
+
+  systemJournal:
+    scrape: false
+
+  auditLog:
+    scrape: false
+
+  syslog:
+    listen: false
+
+  extraScrapeConfigs: []

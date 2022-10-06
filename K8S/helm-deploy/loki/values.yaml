@@ -1018,7 +1018,7 @@ compactor: {}
 chunkStoreConfig:
   # chunkStoreConfig.maxLookBackPeriod -- Limit how long back data can be queried. Default is disabled.
   # This should always be set to a value less than or equal to what is set in `tableManager.retentionPeriod` .
-  maxLookBackPeriod: 10s
+  maxLookBackPeriod: 0s
   # chunkStoreConfig.cacheLookupsOlderThan -- Cache index entries older than this period. Default is disabled.
   cacheLookupsOlderThan: 0s
   # chunkStoreConfig.chunkCacheConfig -- The cache configuration for storing chunks
@@ -1159,7 +1159,7 @@ tableManager:
   retentionDeletesEnabled: false
   # tableManager.retentionPeriod -- How far back tables will be kept before they are deleted. 0s disables deletion.
   # The retention period must be a multiple of the index / chunks table "period" (see periodConfig).
-  retentionPeriod: 10s
+  retentionPeriod: 0s
   # tableManager.throughputUpdatesDisabled -- Master 'off-switch' for table capacity updates, e.g. when troubleshooting.
   throughputUpdatesDisabled: false
   # tableManager.pollInterval -- Period with which the table manager will poll for tables.

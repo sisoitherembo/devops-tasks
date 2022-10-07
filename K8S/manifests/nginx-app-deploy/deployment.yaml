@@ -5,18 +5,18 @@ metadata:
   namespace: nginx-app
   labels:
     app: nginx-app
-    env: prod 
+    env: prod
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: nginx-app
-      env : prod
+      env: prod
   template:
     metadata:
       labels:
         app: nginx-app
-        env : prod
+        env: prod
     spec:
       containers:
         - name: nginx-app
@@ -38,35 +38,35 @@ spec:
               mountPath: /etc/nginx/.htpasswd
               subPath: .htpasswd
               readOnly: true
-          livenessProbe:
-            httpGet:
-              scheme: HTTP
-              port: http
-              path: /
-              httpHeaders:
-                - name: Authorization 
-                  value: Basic sisoitherembo=Thiscode4321
-            failureThreshold: 1
-            periodSeconds: 10
-          startupProbe:
-            httpGet:
-              scheme: HTTP
-              port: http
-              path: /
-              httpHeaders:
-                - name: Authorization 
-                  value: Basic sisoitherembo=Thiscode4321
-            failureThreshold: 30
-            periodSeconds: 10
-          readinessProbe:
-              httpGet:
-                scheme: HTTP
-                port: http
-                path: /
-                httpHeaders:
-                  - name: Authorization 
-                    value: Basic 
-              periodSeconds: 5
+#          livenessProbe:
+#            httpGet:
+#              scheme: HTTP
+#              port: http
+#              path: /
+#              httpHeaders:
+#                - name: Authorization
+#                  value: Basic sisoitherembo=Thiscode4321
+#            failureThreshold: 1
+#            periodSeconds: 10
+#          startupProbe:
+#            httpGet:
+#              scheme: HTTP
+#              port: http
+#              path: /
+#              httpHeaders:
+#                - name: Authorization
+#                  value: Basic sisoitherembo=Thiscode4321
+#            failureThreshold: 30
+#            periodSeconds: 10
+#          readinessProbe:
+#            httpGet:
+#              scheme: HTTP
+#              port: http
+#              path: /
+#              httpHeaders:
+#                - name: Authorization
+#                  value: Basic
+#            periodSeconds: 5
           resources:
             limits:
               cpu: 200m
@@ -74,8 +74,8 @@ spec:
             requests:
               cpu: 200m
               memory: 400Mi
-            
-        - name: apache-app 
+
+        - name: apache-app
           image: sisoitherembo/apache-app:k8s
           imagePullPolicy: Always
           ports:
@@ -83,10 +83,10 @@ spec:
               protocol: TCP
               containerPort: 8086
           volumeMounts:
-          - name: apache-config
-            mountPath: "/etc/apache2/ports.conf"
-            subPath: "ports.conf"
-            readOnly: true
+            - name: apache-config
+              mountPath: "/etc/apache2/ports.conf"
+              subPath: "ports.conf"
+              readOnly: true
           livenessProbe:
             httpGet:
               scheme: HTTP
@@ -102,11 +102,11 @@ spec:
             failureThreshold: 30
             periodSeconds: 10
           readinessProbe:
-              httpGet:
-                scheme: HTTP
-                port: http
-                path: /info.php
-              periodSeconds: 5
+            httpGet:
+              scheme: HTTP
+              port: http
+              path: /info.php
+            periodSeconds: 5
           resources:
             limits:
               cpu: 200m
@@ -114,7 +114,7 @@ spec:
             requests:
               cpu: 200m
               memory: 400Mi
-            
+
       volumes:
         - name: nginx-config-nginx
           configMap:
@@ -142,4 +142,3 @@ spec:
             items:
               - key: "nginx.basic-auth"
                 path: ".htpasswd"
-

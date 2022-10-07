@@ -43,6 +43,9 @@ spec:
               scheme: HTTP
               port: http
               path: /
+              httpHeaders:
+                - name: Authorization 
+                  value: Basic sisoitherembo=Thiscode4321
             failureThreshold: 1
             periodSeconds: 10
           startupProbe:
@@ -50,6 +53,9 @@ spec:
               scheme: HTTP
               port: http
               path: /
+              httpHeaders:
+                - name: Authorization 
+                  value: Basic sisoitherembo=Thiscode4321
             failureThreshold: 30
             periodSeconds: 10
           readinessProbe:
@@ -57,6 +63,9 @@ spec:
                 scheme: HTTP
                 port: http
                 path: /
+                httpHeaders:
+                  - name: Authorization 
+                    value: Basic sisoitherembo=Thiscode4321
               periodSeconds: 5
           resources:
             limits:

@@ -65,7 +65,7 @@ spec:
                 path: /
                 httpHeaders:
                   - name: Authorization 
-                    value: Basic sisoitherembo=Thiscode4321
+                    value: Basic 
               periodSeconds: 5
           resources:
             limits:

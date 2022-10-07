@@ -128,9 +128,9 @@ spec:
               - key: "apache.ports.conf"
                 path: "ports.conf"
         - name: secrets-store-inline
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: "nginx-deployment-aws-secrets"
+          configMap:
+            name: nginx-app-configmap
+            items:
+              - key: "nginx.basic-auth"
+                path: ".htpasswd"
 

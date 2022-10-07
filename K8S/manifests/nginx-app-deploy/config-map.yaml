@@ -170,6 +170,5 @@ data:
                     etag off;
             }
     }
-  nginx.basic-auth: |
-        sisoitherembo:$apr1$zqZKVZT1$ptE22R5JchlwylJc4Nc.b0
+  nginx.basic-auth: hhhhhhhadasd
         

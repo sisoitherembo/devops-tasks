@@ -3,7 +3,11 @@ NPcr9uEDKhsFFvoU0Pb4cxX55Y1OBpAGhr4mDoVg
 helm install prometheus prometheus-community/prometheus --set "alertmanager.persistentVolume.storageClass=local-storage,server.persistentVolume.storageClass=local-storage"
 helm install grafana grafana/grafana --set "persistence.enabled=true,persistence.storageClassName=local-storage"
 helm upgrade --install loki grafana/loki-distributed --version 0.43.0
-helm upgrade --install promtail grafana/promtail --set config.clients[0].url="http://loki-loki-distributed-gateway/loki/api/v1/push" --version 3.10.0
+helm upgrade --install promtail grafana/promtail --set config.lokiAddress="http://loki-loki-distributed-gateway/loki/api/v1/push" --version 3.10.0
 kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
 helm install loki grafana/loki-stack --version 2.6.9 
 helm install loki kube-ops/loki --set "persistence.storageClassName=local-storage,promtail.enabled=true"
+helm repo add external-secrets https://charts.external-secrets.io
+helm install external-secrets external-secrets/external-secrets
+
+kubectl apply -f https://raw.githubusercontent.com/godaddy/kubernetes-external-secrets/master/external-secrets.yml

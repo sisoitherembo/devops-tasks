@@ -170,6 +170,5 @@ data:
                     etag off;
             }
     }
-  nginx.basic-auth: | 
-        hhhhhhhadasd
+  nginx.basic-auth: hhhhhhhadasd
         

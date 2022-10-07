@@ -1,4 +1,4 @@
 #!/bin/bash
 
 HTPASSWD=$(aws ssm get-parameters --name nginx-auth --region us-east-1 --with-decryption --output text --query Parameters[].Value)
-sed -i "s/nginx.basic-auth: |.*\n.*/nginx.basic-auth: | \n\t $HTPASSWD/" ~/dev*/K8S/manifests/nginx-app-deploy/config-map.yaml
+sed -i "s/nginx.basic-auth:.*/nginx.basic-auth: \"$HTPASSWD\"/" ~/dev*/K8S/manifests/nginx-app-deploy/config-map.yaml

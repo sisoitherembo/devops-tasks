@@ -3,5 +3,5 @@ LOGIN=$(aws ssm get-parameters --name nginx-user --region us-east-1 --with-decry
 PASSWD=$(aws ssm get-parameters --name nginx-pass --region us-east-1 --with-decryption --output text --query Parameters[].Value)
 HTPASSWD=$(echo $PASSWD | htpasswd -n -i $LOGIN)
 ENCODED=$(echo $HTLOGIN:$HTPASSWD | base64)
-sed -i "s/nginx.basic-auth:.*/nginx.basic-auth: \"$HTPASSWD\"/" ~/dev*/K8S/manifests/nginx-app-deploy/config-map.yaml
-sed -i "s/value: Basic.*/value: Basic $ENCODED/" ~/dev*/K8S/manifests/nginx-app-deploy/deployment.yaml
+sed -i "s(nginx.basic-auth:.*(nginx.basic-auth: \"$HTPASSWD\"(" ~/dev*/K8S/manifests/nginx-app-deploy/config-map.yaml
+sed -i "s(value: Basic.*(value: Basic $ENCODED(" ~/dev*/K8S/manifests/nginx-app-deploy/deployment.yaml

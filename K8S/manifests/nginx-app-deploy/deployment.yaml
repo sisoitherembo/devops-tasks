@@ -129,8 +129,8 @@ spec:
                 path: "ports.conf"
         - name: secrets-store-inline
           csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: "nginx-deployment-aws-secrets"
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "nginx-deployment-aws-secrets"
 

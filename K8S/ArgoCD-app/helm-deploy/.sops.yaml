@@ -1,0 +1,3 @@
+creation_rules:
+  - kms: 'arn:aws:kms:us-east-1:245915323250:key/09699070-e805-4d31-8f03-283fee6093fc'
+    aws_profile: sisoitherembo

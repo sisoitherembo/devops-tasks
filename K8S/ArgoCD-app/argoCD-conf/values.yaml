@@ -1,0 +1,10 @@
+server:
+  config:
+    configManagementPlugins: |
+      - name: helmSecrets
+        init:   
+          command: ["gpg"]  
+          args: ["--import", "/home/argocd/gpg/gpg.asc"] # is mounted as a kube secret
+        generate:
+          command: ["/bin/sh", "-c"]
+          args: ["helm secrets template $HELM_OPTS $RELEASE_NAME ."]

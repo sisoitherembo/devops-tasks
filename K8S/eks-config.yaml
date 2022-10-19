@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: sisoi-k8s-helm
+  name: sisoi-k8ss
   region: us-east-1
 
 nodeGroups:
@@ -10,5 +10,5 @@ nodeGroups:
     instanceType: t3.small
     desiredCapacity: 1
   - name: worker
-    instanceType: t3.small
+    instanceType: t3.medium
     desiredCapacity: 1

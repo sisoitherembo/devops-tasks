@@ -5,3 +5,4 @@ token.id
 AWS_KEYS
 creds
 debug
+argo-aws-credentials.yaml

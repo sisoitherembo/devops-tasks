@@ -9,5 +9,7 @@ data:
   {{- $root := . }}
   {{- range $path, $bytes := .Files.Glob "**.conf" }}
   {{ base $path }}: |-
-  {{- $root.Files.Get $path | nindent 4 }}
-  {{- end -}}      
+    {{- $root.Files.Get $path | nindent 4 }}
+    {{- end -}}      
+  
+  nginx.basic-auth.conf: {{ .Values.nginx.basic-auth }}

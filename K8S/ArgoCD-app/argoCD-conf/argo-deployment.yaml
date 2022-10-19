@@ -23,7 +23,7 @@ spec:
         - --redis
         - argocd-redis:6379
 #        image: argoproj/argocd:v1.7.9
-        image: setevoy/argocd-helm-secrets:v1.7.9-1
+        image: sisoitherembo/custom-argocd:latest
         imagePullPolicy: Always
         name: argocd-repo-server
         ports:

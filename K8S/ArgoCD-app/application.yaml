@@ -7,10 +7,13 @@ spec:
   destination:
     namespace: default 
     server: 'https://kubernetes.default.svc'
+    
   source:
     path: K8S/ArgoCD-app/helm-deploy
     repoURL: 'https://github.com/sisoitherembo/devops-tasks.git'
-    targetRevision: master 
+    targetRevision: master
+    helm: 
+      releaseName: nginx-app 
     #plugin:
     #  name: sopsNdu
     #  env:

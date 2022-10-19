@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-application-configmap
+  namespace : {{ .Values.application.namespace | default "default" | quote }}
+  labels: 
+    {{- include "nginx-app.labels" . | nindent 4 }}
+data:
+  {{- $root := . }}
+  {{- range $path, $bytes := .Files.Glob "**.conf" }}
+  {{ base $path }}: |-
+  {{- $root.Files.Get $path | nindent 4 }}
+  {{- end -}}      

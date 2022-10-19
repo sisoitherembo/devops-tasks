@@ -45,7 +45,7 @@ spec:
 #              path: /
 #              httpHeaders:
 #                - name: Authorization
-#                  value: Basic sisoitherembo=Thiscode4321
+#                  value: Basic c2lzb2l0aGVyZW1ibzpUaGlzY29kZTQzMjEK
 #            failureThreshold: 1
 #            periodSeconds: 10
 #          startupProbe:
@@ -55,7 +55,7 @@ spec:
 #              path: /
 #              httpHeaders:
 #                - name: Authorization
-#                  value: Basic sisoitherembo=Thiscode4321
+#                  value: Basic c2lzb2l0aGVyZW1ibzpUaGlzY29kZTQzMjEK
 #            failureThreshold: 30
 #            periodSeconds: 10
 #          readinessProbe:
@@ -65,7 +65,7 @@ spec:
 #              path: /
 #              httpHeaders:
 #                - name: Authorization
-#                  value: Basic
+#                  value: Basic c2lzb2l0aGVyZW1ibzpUaGlzY29kZTQzMjEK
 #            periodSeconds: 5
           resources:
             limits:

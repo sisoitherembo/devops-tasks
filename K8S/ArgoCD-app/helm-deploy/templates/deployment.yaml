@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-application-deployment
+  namespace : {{ .Values.application.namespace | default "default" | quote }}
+  labels: 
+    {{- include "nginx-app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.application.nginx.spec.replicas }}
+  selector:
+    matchLabels:
+      {{- include "nginx-app.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "nginx-app.labels" . | nindent 8 }}
+    spec:
+      volumes:
+        - name: nginx-config-nginx
+          configMap:
+            name: {{ .Release.Name }}-configmap
+            items:
+              - key: "nginx.nginx.conf"
+                path: "nginx.conf"
+        - name: nginx-config-server
+          configMap:
+            name: {{ .Release.Name }}-configmap
+            items:
+              - key: "nginx.server.conf"
+                path: "server.conf"
+              - key: "nginx.roundrobin.conf"
+                path: "roundrobin.conf"
+        - name: apache-config
+          configMap:
+            name: {{ .Release.Name }}-configmap
+            items:
+              - key: "apache.ports.conf"
+                path: "ports.conf"
+        - name: secrets-store-inline
+          configMap:
+            name: {{ .Release.Name }}-configmap
+            items:
+              - key: "nginx.basic-auth.conf"
+                path: ".htpasswd"
+      
+      containers:
+        - name: nginx-app
+          image: {{ .Values.application.nginx.spec.image }}
+          imagePullPolicy: {{ .Values.application.nginx.spec.imagePullPolicy }}
+          ports:
+            {{- toYaml .Values.application.nginx.spec.ports | nindent 12 }}
+          volumeMounts:
+            - name: nginx-config-nginx
+              mountPath: "/etc/nginx/nginx.conf"
+              subPath: "nginx.conf"
+              readOnly: true
+            - name: nginx-config-server
+              mountPath: "/etc/nginx/conf.d"
+              readOnly: true
+            - name: secrets-store-inline
+              mountPath: /etc/nginx/.htpasswd
+              subPath: .htpasswd
+              readOnly: true
+          resources:
+            limits:
+              {{- toYaml .Values.application.nginx.spec.resources.limits | nindent 14}}
+            requests:
+              {{- toYaml .Values.application.nginx.spec.resources.requests | nindent 14}}
+
+        - name: apache-app
+          image: {{ .Values.application.apache.spec.image }}
+          imagePullPolicy: {{ .Values.application.apache.spec.imagePullPolicy }}
+          ports:
+            {{- toYaml .Values.application.apache.spec.ports | nindent 12 }}
+          volumeMounts:
+            - name: apache-config
+              mountPath: "/etc/apache2/ports.conf"
+              subPath: "ports.conf"
+              readOnly: true
+          {{- if .Values.application.apache.spec.probes }}
+          {{- with .Values.application.apache.spec.probes }}
+          livenessProbe:
+            httpGet:
+              {{- toYaml .httpGet | nindent 14 }}
+            failureThreshold: {{ .livenessProbe.failureThreshold }}
+            periodSeconds: {{ .livenessProbe.periodSeconds }}
+          startupProbe:
+            httpGet:
+              {{- toYaml .httpGet | nindent 14 }}
+            failureThreshold: {{ .startupProbe.failureThreshold }}
+            periodSeconds: {{ .startupProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              {{- toYaml .httpGet | nindent 14 }}
+            periodSeconds: {{ .readinessProbe.periodSeconds }}
+            {{- end }}
+          {{- end }}
+          resources:
+            limits:
+              {{- toYaml .Values.application.apache.spec.resources.limits | nindent 14}}
+            requests:
+              {{- toYaml .Values.application.apache.spec.resources.requests | nindent 14}}
+

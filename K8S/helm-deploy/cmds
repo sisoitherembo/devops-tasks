@@ -7,7 +7,24 @@ helm upgrade --install promtail grafana/promtail --set config.lokiAddress="http:
 kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
 helm install loki grafana/loki-stack --version 2.6.9 
 helm install loki kube-ops/loki --set "persistence.storageClassName=local-storage,promtail.enabled=true"
+
+
 helm repo add external-secrets https://charts.external-secrets.io
 helm install external-secrets external-secrets/external-secrets
 
 kubectl apply -f https://raw.githubusercontent.com/godaddy/kubernetes-external-secrets/master/external-secrets.yml
+
+ntZcmQXlyiSNA3XV2DnPSfGL2QdGUFroVru5GbFH
+
+
+wrm3W2VR37heXm9nuv8EXOG1gq9kxGjEoh7SK3fk
+
+Z9EG1OjyWvlbzDlendf8w4t8jZOgcOs2XeI026OL
+
+YUSuSktDutzRPEYyE1haTvS6lor5ijZWBlhubWec
+
+RoWCp4dvtqpGWpGMhaYRJfKztaHI0NvOjblOelmg
+
+oLJpfbVyIbgaqCrEIpcQTUa3sTfrigSkdgP1MDyC
+
+helm install prometheus-adapter prometheus-community/prometheus-adapter --set "prometheus.url=http://loki-prometheus-server,prometheus.port=80"

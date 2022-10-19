@@ -1,0 +1,102 @@
+application:
+  namespace: nginx-app
+  env: prod
+  nginx:
+    spec:
+      replicas: 2
+      image: sisoitherembo/nginx-app:k8s
+      imagePullPolicy: Always
+      ports: 
+        - name: http
+          protocol: TCP
+          containerPort: 80
+      resources:
+        limits:
+          cpu: 200m
+          memory: 400Mi
+        requests:
+          cpu: 200m
+          memory: 400Mi
+
+  apache:
+    spec:
+      image: sisoitherembo/apache-app:k8s
+      imagePullPolicy: Always
+      ports:
+        - name: http
+          protocol: TCP
+          containerPort: 8086
+      probes:
+        httpGet:
+            scheme: HTTP
+            port: http
+            path: /info.php
+        livenessProbe:
+          failureThreshold: 1
+          periodSeconds: 10
+        startupProbe:
+          failureThreshold: 30
+          periodSeconds: 10
+        readinessProbe:
+          periodSeconds: 5
+      resources:
+        limits:
+          cpu: 200m
+          memory: 400Mi
+        requests:
+          cpu: 200m
+          memory: 400Mi
+  
+  hpa:
+    targetCPUUtilizationPercentage: 30
+    minReplicas: 2
+    maxReplicas: 10
+  
+  svc: 
+    type: NodePort
+    ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30000
+      protocol: TCP
+
+
+
+
+loki:
+  enabled: true
+  isDefault: true
+  url: http://{{(include "loki.serviceName" .)}}:{{ .Values.loki.service.port }}
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 45
+  livenessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 45
+  datasource:
+    jsonData: {}
+    uid: ""
+
+fluent-bit:
+  enabled: true
+
+grafana:
+  enabled: true
+  sidecar:
+    datasources:
+      enabled: true
+      maxLines: 1000
+  image:
+    tag: 8.3.5
+
+prometheus:
+  enabled: true
+  isDefault: false
+  url: http://{{ include "prometheus.fullname" .}}:{{ .Values.prometheus.server.service.servicePort }}{{ .Values.prometheus.server.prefixURL }}
+  datasource:
+    jsonData: {}

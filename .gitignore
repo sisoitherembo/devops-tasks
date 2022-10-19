@@ -3,3 +3,5 @@ credentials.yml
 secrets.yml
 token.id
 AWS_KEYS
+creds
+debug

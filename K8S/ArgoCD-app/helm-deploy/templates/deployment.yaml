@@ -18,13 +18,13 @@ spec:
       volumes:
         - name: nginx-config-nginx
           configMap:
-            name: {{ .Release.Name }}-configmap
+            name: {{ .Release.Name }}-application-configmap
             items:
               - key: "nginx.nginx.conf"
                 path: "nginx.conf"
         - name: nginx-config-server
           configMap:
-            name: {{ .Release.Name }}-configmap
+            name: {{ .Release.Name }}-application-configmap
             items:
               - key: "nginx.server.conf"
                 path: "server.conf"
@@ -32,13 +32,13 @@ spec:
                 path: "roundrobin.conf"
         - name: apache-config
           configMap:
-            name: {{ .Release.Name }}-configmap
+            name: {{ .Release.Name }}-application-configmap
             items:
               - key: "apache.ports.conf"
                 path: "ports.conf"
         - name: secrets-store-inline
           configMap:
-            name: {{ .Release.Name }}-configmap
+            name: {{ .Release.Name }}-application-configmap
             items:
               - key: "nginx.basic-auth.conf"
                 path: ".htpasswd"

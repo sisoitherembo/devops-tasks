@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-app-with-monitoring
+  namespace: argocd
+spec:
+  destination:
+    namespace: default 
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: K8S/ArgoCD-app/helm-deploy
+    repoURL: 'https://github.com/sisoitherembo/devops-tasks.git'
+    targetRevision: master 
+    #plugin:
+    #  name: sopsNdu
+    #  env:
+    #    - name: AWS_ACCESS_KEY_ID
+    #      value: <INSERT YOUR AWS ACCESS KEY ID HERE>  
+    #    - name: AWS_SECRET_ACCESS_KEY
+    #      value: <INSERT YOUR AWS SECRET ACCESS KEY HERE> 
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true

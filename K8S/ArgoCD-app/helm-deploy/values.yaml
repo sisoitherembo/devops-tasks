@@ -1,5 +1,5 @@
 application:
-  namespace: nginx-app
+  namespace: default
   env: prod
   nginx:
     spec:
@@ -15,8 +15,8 @@ application:
           cpu: 200m
           memory: 400Mi
         requests:
-          cpu: 200m
-          memory: 400Mi
+          cpu: 20m
+          memory: 40Mi
 
   apache:
     spec:
@@ -44,8 +44,8 @@ application:
           cpu: 200m
           memory: 400Mi
         requests:
-          cpu: 200m
-          memory: 400Mi
+          cpu: 20m
+          memory: 40Mi
   
   hpa:
     targetCPUUtilizationPercentage: 30
@@ -100,3 +100,9 @@ prometheus:
   url: http://{{ include "prometheus.fullname" .}}:{{ .Values.prometheus.server.service.servicePort }}{{ .Values.prometheus.server.prefixURL }}
   datasource:
     jsonData: {}
+  scrape_configs:
+      - job_name: kube-state-metrics
+        static_configs:
+          - targets:
+            - kube-state-metrics.kube-system.svc.cluster.local:8080
+

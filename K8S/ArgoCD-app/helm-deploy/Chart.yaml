@@ -4,8 +4,6 @@ version: 3.0.0
 appVersion: v0.0.1
 kubeVersion: "^1.10.0-0"
 description: "Nginx-app deployment with "
-sources:
-- https://github.com/grafana/loki
 maintainers:
 - name: Dzmitry Zarubo
   email: dmitri20023zarubo@gmail.com

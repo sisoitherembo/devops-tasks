@@ -1,0 +1,14 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: sisoi-k8s-helm
+  region: us-east-1
+
+nodeGroups:
+  - name: master
+    instanceType: t3.small
+    desiredCapacity: 1
+  - name: worker
+    instanceType: t3.small
+    desiredCapacity: 1

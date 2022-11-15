@@ -9,13 +9,13 @@ EXPOSE 8081/tcp
 EXPOSE 8082/tcp
 WORKDIR ${HOME}
 
+RUN  adduser -D ${USER} \
+        && addgroup ${USER} ${USER} 
+
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY roundrobin.conf /etc/nginx/conf.d/round.conf
 COPY server.conf /etc/nginx/conf.d/default.conf
 
-RUN  adduser -D ${USER} \
-        && addgroup ${USER} ${USER} 
-       
 COPY --chown=${USER}:${USER} ./nginx-user ${HOME}
 COPY scripts/40-daemon.sh /docker-entrypoint.d/40-nginx-log-daemon.sh
 COPY scripts/nginx-log-daemon.sh /home/

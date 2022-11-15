@@ -14,6 +14,8 @@ services:
       - /mnt/d/nginx-user:/home/nginx-user
     depends_on:
       - apache
+    restart: always
+    
 
   apache-app:
     build:
@@ -21,4 +23,5 @@ services:
       dockerfile: apache.dockerfile
     ports:
       - "8080:80"
+    restart: always
 
